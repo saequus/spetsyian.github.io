@@ -7,6 +7,7 @@ import { getAllPosts } from '../lib/api'
 import Head from 'next/head'
 import { CMS_NAME } from '../lib/constants'
 import Post from '../types/post'
+import MainBlock from '../components/main-block'
 
 type Props = {
   allPosts: Post[]
@@ -34,6 +35,9 @@ const Index = ({ allPosts }: Props) => {
             />
           )}
           {morePosts.length > 0 && <MoreStories posts={morePosts} />}
+
+        <MainBlock slug="temp-slug" title="temp-title"></MainBlock>
+        
         </Container>
       </Layout>
     </>

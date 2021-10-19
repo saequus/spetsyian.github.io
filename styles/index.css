@@ -2,9 +2,38 @@
 
 /* Write your own custom base styles here */
 
+.chocolate-bg {
+  background: #1c1c1c;
+}
+.orange {
+  color: #f57c00;
+}
+.orange-bg {
+  background-color: #f57c00;
+}
+.border-orange {
+  border-color: rgba(75, 85, 99);
+  border: 1pt solid;
+}
+.border-orange:hover {
+  border-color: #f57c00;
+  border: 1pt solid;
+}
+.gray-600 {
+  color: rgba(75, 85, 99);
+}
+.shadow-t-bl {
+  text-shadow: 0 0 1px black;
+}
+
+
+
 /* Start purging... */
 @tailwind components;
 /* Stop purging. */
+
+
+
 
 /* Write you own custom component styles here */
 
