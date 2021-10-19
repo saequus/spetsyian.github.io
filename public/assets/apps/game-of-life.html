@@ -1,0 +1,1447 @@
+<html lang='en-us'>
+  <head>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;subset=cyrillic,cyrillic-ext,latin-ext' rel='stylesheet'>
+
+    <title>Game Of Life</title>
+
+    <style type='text/css'>
+      body {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 15px;
+        background: #F2F1F0;
+        margin: 0;
+      }
+      a:link, a:hover {
+        text-decoration: underline;
+        color: inherit;
+      }
+      a:visited, a:active {
+        text-decoration: none;
+        color: inherit;
+      }
+      button, #speed-tracker {
+        border-radius: 4px;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      button {
+        font-size: 15px;
+        background: #0F5DE4;
+        outline: none;
+        border: 1px solid transparent;
+        color: white;
+        padding: 5px 20px 5px 20px;
+      }
+      .wrapper {
+        margin: 0 20px 0 20px;
+      }
+      .canvas-block {
+        padding-top: 10px;
+        margin: auto;
+        display: flex;
+        font-size: 18px;
+        justify-content: space-around;
+      }
+      .title-block {
+        padding-left: 45%;
+      } 
+      .metrics-block {
+        max-width: 1100px;
+        display: flex;
+        justify-content: space-around;
+        margin: auto;
+        padding: 30px 20px 30px 20px;
+      }
+      .metric-item {
+        margin: 10px 0 5px 0;
+      }
+      .control-panel {
+        max-width: 1100px;
+        display: flex;
+        justify-content: space-around;
+        padding-top: 10px;
+        margin: auto;
+      }
+      .control-panel-item {
+        margin: 5px 5px 15px 5px;
+      }
+      .explanatory-note-block {
+        margin: 5px;
+        text-align: center;
+      }
+      .explanatory-note {
+        color: #AFAFAF;
+      }
+      .speed-tracker-block {
+        margin: 5px 5px 10px 5px;
+        display: flex;
+      }
+      .speed-tracker-label {
+        margin: 5px 10px 0 0;
+      }
+      #canvas {
+        box-shadow: 0 8px 24px 0 rgba(84, 85, 104, .24);
+      }
+      #speed-tracker {
+        font-size: 16px;
+        width: 40px;
+        background: white;
+        padding: 5px;
+        border: 1px solid #AFAFAF;
+        line-height: 1.25;
+        outline: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: center;
+      }
+      @media (max-width: 844px) {
+        .wrapper {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div class='wrapper'>
+
+    <div class='title-block'>
+      <h2 id='title'>Game Of Life</h2>
+    </div>
+
+    <div class='canvas-block'>
+      <canvas id='canvas' height='408'></canvas>
+    </div>
+
+    <div class='metrics-block'>
+      <div>
+        <div class='metric-item'>
+          <span style='margin: 5px;'>Generation:</span>
+          <span style='margin: 5px;' id='generation'></span>
+        </div>
+        <div class='metric-item'>
+          <span style='margin: 5px;'>Live cells number: </span>
+          <span style='margin: 5px;' id='livecells'></span>
+        </div>
+      </div>
+      <div>
+        <div class='speed-tracker-block'>
+          <div class='speed-tracker-label'>Current speed</div>
+          <div id='speed-tracker'></div>
+        </div>
+        <div class='explanatory-note-block'>
+          <small class='explanatory-note'>Press Left and Right Arrows to increase or decrease speed</small>
+        </div>
+      </div>
+    </div>
+
+    <div class='control-panel'>
+
+      <div>
+        <div class='control-panel-item'>
+          <button id='buttonRun'>Run</button>
+        </div>
+        <div class='explanatory-note-block'>
+          <small class='explanatory-note'>Press Enter, Space</small>
+        </div>
+      </div>
+
+      <div>
+        <div class='control-panel-item'>
+          <button id='buttonStep'>Step</button>
+        </div>
+        <div class='explanatory-note-block'>
+          <small class='explanatory-note'>Press S</small>
+        </div>
+      </div>
+
+      <div>
+        <div class='control-panel-item'>
+          <button id='buttonClear'>Clear</button>
+        </div>
+        <div class='explanatory-note-block'>
+          <small class='explanatory-note'>Press C</small>
+        </div>
+      </div>
+
+      <div>
+        <div class='control-panel-item'>
+          <button id='buttonGrid'>Grid</button>
+        </div>
+        <div class='explanatory-note-block'>
+          <small class='explanatory-note'>Press G</small>
+        </div>
+      </div>
+
+      <div>
+        <div class='control-panel-item'>
+          <button id='buttonTrail'>Trail</button>
+        </div>
+        <div class='explanatory-note-block'>
+          <small class='explanatory-note'>Press T</small>
+        </div>
+      </div>
+
+      <div>
+        <div class='control-panel-item'>
+          <button id='buttonColors'>Colors</button>
+        </div>
+        <div class='explanatory-note-block'>
+          <small class='explanatory-note'>Press O</small>
+        </div>
+      </div>
+
+    </div>
+
+
+    <button style='display: none' id='exportUrlLink'></button>
+    <button style='display: none' id='exportTinyUrlLink'></button>
+    <button style='display: none' id='exportUrl'></button>
+
+    <script>
+      // Copyright (C) 2008 Google Inc.
+      //
+      // Licensed under the Apache License, Version 2.0 (the "License");
+      // you may not use this file except in compliance with the License.
+      // You may obtain a copy off the License at
+      //
+      //      http://www.apache.org/licenses/LICENSE-2.0
+      //
+      // Unless required by applicable law or agreed to in writing, software
+      // distributed under the License is distributed on an "AS IS" BASIS,
+      // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      // See the License for the specific language governing permissions and
+      // limitations under the License.
+
+      /**
+       * Parses a string of well-formed JSON text.
+       * Mike Samuel <mikesamuel@gmail.com>
+       */
+
+      const jsonParse=(function(){let number='(?:-?\\b(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\\b)';let oneChar='(?:[^\\0-\\x08\\x0a-\\x1f\"\\\\]'+'|\\\\(?:[\"/\\\\bfnrt]|u[0-9A-Fa-f]{4}))';let string='(?:\"'+oneChar+'*\")';let jsonToken=new RegExp('(?:false|true|null|[\\{\\}\\[\\]]'+'|'+number
+        +'|'+string
+        +')','g');let escapeSequence=new RegExp('\\\\(?:([^u])|u(.{4}))','g');let escapes={'"':'"','/':'/','\\':'\\','b':'\b','f':'\f','n':'\n','r':'\r','t':'\t'};function unescapeOne(_,ch,hex){return ch?escapes[ch]:String.fromCharCode(parseInt(hex,16));}const EMPTY_STRING=String('');const SLASH='\\';let firstTokenCtors={'{':Object,'[':Array};let hop=Object.hasOwnProperty;return function(json,opt_reviver){let toks=json.match(jsonToken);let result;let tok=toks[0];if('{'===tok){result={};}else if('['===tok){result=[];}else{throw new Error(tok);}let key;let stack=[result];for(let i=1,n=toks.length;i<n;++i){tok=toks[i];let cont;switch(tok.charCodeAt(0)){default:cont=stack[0];cont[key||cont.length]=+(tok);key=void 0;break;case 0x22:tok=tok.substring(1,tok.length-1);if(tok.indexOf(SLASH)!==-1){tok=tok.replace(escapeSequence,unescapeOne);}cont=stack[0];if(!key){if(cont instanceof Array){key=cont.length;}else{key=tok||EMPTY_STRING;break;}}cont[key]=tok;key=void 0;break;case 0x5b:cont=stack[0];stack.unshift(cont[key||cont.length]=[]);key=void 0;break;case 0x5d:stack.shift();break;case 0x66:cont=stack[0];cont[key||cont.length]=false;key=void 0;break;case 0x6e:cont=stack[0];cont[key||cont.length]=null;key=void 0;break;case 0x74:cont=stack[0];cont[key||cont.length]=true;key=void 0;break;case 0x7b:cont=stack[0];stack.unshift(cont[key||cont.length]={});key=void 0;break;case 0x7d:stack.shift();break;}}if(stack.length){throw new Error();}if(opt_reviver){let walk=function(holder,key){var value=holder[key];if(value&&typeof value==='object'){var toDelete=null;for(var k in value){if(hop.call(value,k)){var v=walk(value,k);if(v!==void 0){value[k]=v;}else{if(!toDelete){toDelete=[];}toDelete.push(k);}}}if(toDelete){for(var i=toDelete.length;--i>=0;){delete value[toDelete[i]];}}}return opt_reviver.call(holder,key,value);};result=walk({'':result},'');}return result;};})();
+
+    </script>
+
+    <script>/*jslint onevar: true, undef: false, nomen: true, eqeqeq: true, plusplus: false, bitwise: true, regexp: true, newcap: true, immed: true  */
+
+    /**
+     * Game of Life - JS & CSS
+     * http://pmav.eu
+     * 04/Sep/2010
+     */
+
+    (function () {
+
+      const GOL = {
+
+        columns : 0,
+        rows : 0,
+
+        waitTime: 0,
+        generation : 0,
+
+        running : false,
+        autoplay : false,
+
+
+        // Clear state
+        clear : {
+          schedule : false
+        },
+
+        // Average execution times
+        times : {
+          algorithm : 0,
+          gui : 0
+        },
+
+        // DOM elements
+        element : {
+          generation : null,
+          livecells : null,
+          speedTracker : null,
+        },
+
+        // Sleep time
+        currentSleepTime : 100, // milliseconds
+
+        // Initial state
+        initialState : '[{"19":[60]},{"20":[62]},{"21":[59,60,63,64,65]}]',
+
+        // Trail state
+        trail : {
+          current: true,
+          schedule : false
+        },
+
+        initialSpeed : 15,
+
+        // Grid style
+        grid : {
+          current : 0,
+
+          schemes : [
+            {
+              color : '#F3F3F3'
+            },
+            {
+              color : '#FFFFFF'
+            },
+            {
+              color : '#666666'
+            },
+            {
+              color : '' // Special case: 0px grid
+            }
+          ]
+        },
+
+        // Zoom level
+        zoom : {
+          current : 0,
+          schedule : false,
+
+          schemes : [
+            { columns : 100, rows : 37, cellSize : 10 },
+            {
+              columns : 180,
+              rows : 86,
+              cellSize : 8
+            },
+
+            {
+              columns : 300,
+              rows : 144,
+              cellSize : 6
+            },
+
+            {
+              columns : 450,
+              rows : 216,
+              cellSize : 4
+            }
+          ]
+        },
+
+
+        // Cell colors
+        colors : {
+          current : 0,
+          schedule : false,
+
+          schemes : [
+            { // gunmetal
+              main : '#182E3A',
+              dead : '#FFFFFF',
+              trail : ['#F1F6F9', '#D4E4ED'],
+              alive : ['#6FA4C3', '#4888AD', '#366681', '#244456']
+            },
+            { // green theme
+              main : '#40721D',
+              dead : '#FFFFFF',
+              trail : ['#D2EFBE', '#E8F7DE'],
+              alive : ['#9AD96D', '#84D14D', '#5CA22A', '#4A8221']
+            },
+            { // violet theme 
+              main : '#422B62',
+              dead : '#FFFFFF',
+              trail : ['#E9E3F3', '#DDD4ED'],
+              alive : ['#B09AD5', '#997EC9', '#8361BD', '#6D48AD'] 
+            }
+          ]
+        },
+
+
+        /**
+         * On Load Event
+         */
+        init : function() {
+          try {
+            this.listLife.init();   // Reset/init algorithm
+            this.loadConfig();      // Load config from URL (autoplay, colors, zoom, ...)
+            this.loadState();       // Load state from URL
+            this.keepDOMElements(); // Keep DOM References (getElementsById)
+            this.canvas.init();     // Init canvas GUI
+            this.registerEvents();  // Register event handlers
+
+            this.prepare();
+          } catch (e) {
+            alert("Error: "+e);
+          }
+        },
+
+
+        /**
+         * Load config from URL
+         */
+        loadConfig : function() {
+          const colorsMap = {
+            ostrovok : 0,
+            zenhotels : 1,
+            ratehawk : 2,
+            newb2b : 2,
+          };
+
+          const st = GOL.handlers.defineStyle();
+
+          this.autoplay = true;
+          this.colors.current = colorsMap[st] || 0;
+          this.grid.current = 0;
+          this.zoom.current = 0;
+
+          this.rows = this.zoom.schemes[this.zoom.current].rows;
+          this.columns = this.zoom.schemes[this.zoom.current].columns;
+        },
+
+
+        /**
+         * Load world state from URL parameter
+         */
+        loadState : function() {
+          let state, i, j, y, s = this.helpers.getUrlParameter('s');
+
+          if ( s === 'random') {
+            this.randomState();
+          } else {
+            if (s === undefined) {
+              s = this.initialState;
+            }
+
+            state = jsonParse(decodeURI(s));
+
+            for (i = 0; i < state.length; i++) {
+              for (y in state[i]) {
+                for (j = 0 ; j < state[i][y].length ; j++) {
+                  this.listLife.addCell(state[i][y][j], parseInt(y, 10), this.listLife.actualState);
+                }
+              }
+            }
+          }
+        },
+
+
+        /**
+         * Create a random pattern
+         */
+        randomState : function() {
+          let i, liveCells = (this.rows * this.columns) * 0.12;
+
+          for (i = 0; i < liveCells; i++) {
+            this.listLife.addCell(this.helpers.random(0, this.columns - 1), this.helpers.random(0, this.rows - 1), this.listLife.actualState);
+          }
+
+          this.listLife.nextGeneration();
+        },
+
+
+        /**
+         * Clean up actual state and prepare a new run
+         */
+        cleanUp : function() {
+          this.listLife.init(); // Reset/init algorithm
+          this.prepare();
+        },
+
+        /**
+         * Get current speed, convert to ms and set as a sleep time
+         */
+        speedToSleepTime : function() {
+          const speedTracker = this.document.getElementById('speed-tracker');
+          if (speedTracker.innerHTML) {
+            this.currentSleepTime = speedTracker.innerHTML;
+          }
+        },
+
+
+        /**
+         * Prepare DOM elements and Canvas for a new run
+         */
+        prepare : function() {
+          this.generation = this.times.algorithm = this.times.gui = 0;
+          this.mouseDown = this.clear.schedule = false;
+
+          this.element.generation.innerHTML = '0';
+          this.element.livecells.innerHTML = '0';
+          this.element.speedTracker.innerHTML = GOL.initialSpeed;
+
+          this.canvas.clearWorld(); // Reset GUI
+          this.canvas.drawWorld(); // Draw State
+
+
+          if (this.autoplay) { // Next Flow
+            this.autoplay = false;
+            this.handlers.buttons.run();
+          }
+        },
+
+
+        /**
+         * keepDOMElements
+         * Save DOM references for this session (one time execution)
+         */
+        keepDOMElements : function() {
+          this.element.generation = document.getElementById('generation');
+          this.element.livecells = document.getElementById('livecells');
+          this.element.speedTracker = document.getElementById('speed-tracker');
+        },
+
+
+        /**
+         * registerEvents
+         * Register event handlers for this session (one time execution)
+         */
+        registerEvents : function() {
+
+          // Keyboard Events
+          this.helpers.registerEvent(document.body, 'keyup', this.handlers.keyboard, false);
+
+          // Controls
+          this.helpers.registerEvent(document.getElementById('buttonRun'), 'click', this.handlers.buttons.run, false);
+          this.helpers.registerEvent(document.getElementById('buttonStep'), 'click', this.handlers.buttons.step, false);
+          this.helpers.registerEvent(document.getElementById('buttonClear'), 'click', this.handlers.buttons.clear, false);
+
+          // Layout
+          this.helpers.registerEvent(document.getElementById('buttonTrail'), 'click', this.handlers.buttons.trail, false);
+          this.helpers.registerEvent(document.getElementById('buttonGrid'), 'click', this.handlers.buttons.grid, false);
+          this.helpers.registerEvent(document.getElementById('buttonColors'), 'click', this.handlers.buttons.colors, false);
+        },
+
+        sleep : function(ms) {
+          return new Promise(resolve => setTimeout(resolve, ms));
+        },
+
+
+        /**
+         * Run Next Step
+         */
+        nextStep : async function() {
+          await this.sleep(this.currentSleepTime);
+          let i, x, y, r, liveCellNumber, algorithmTime, guiTime;
+
+          // Algorithm run
+          algorithmTime = (new Date());
+          liveCellNumber = this.listLife.nextGeneration();
+          algorithmTime = (new Date()) - algorithmTime;
+
+
+          // Canvas run
+
+          guiTime = (new Date());
+
+          for (i = 0; i < this.listLife.redrawList.length; i++) {
+            x = this.listLife.redrawList[i][0];
+            y = this.listLife.redrawList[i][1];
+
+            if (this.listLife.redrawList[i][2] === 1) {
+              this.canvas.changeCelltoAlive(x, y);
+            } else if (this.listLife.redrawList[i][2] === 2) {
+              this.canvas.keepCellAlive(x, y);
+            } else {
+              this.canvas.changeCelltoDead(x, y);
+            }
+          }
+
+          guiTime = (new Date()) - guiTime;
+
+          // Pos-run updates
+
+          // Clear Trail
+          if (this.trail.schedule) {
+            this.trail.schedule = false;
+            this.canvas.drawWorld();
+          }
+
+          // Change Grid
+          if (this.grid.schedule) {
+            this.grid.schedule = false;
+            this.canvas.drawWorld();
+          }
+
+          // Change Colors
+          if (this.colors.schedule) {
+            this.colors.schedule = false;
+            this.canvas.drawWorld();
+          }
+
+          // Running Information
+          this.generation++;
+          this.element.generation.innerHTML = this.generation;
+          this.element.livecells.innerHTML = liveCellNumber;
+
+          // Flow Control
+          if (this.running) {
+            setTimeout(function() {
+              GOL.nextStep();
+            }, this.waitTime);
+          } else {
+            if (this.clear.schedule) {
+              this.cleanUp();
+            }
+          }
+        },
+
+
+        /** ****************************************************************************************************************************
+         * Event Handlers
+         */
+        handlers : {
+          mouseDown : false,
+          lastX : 0,
+          lastY : 0,
+
+          /**
+           *
+           */
+          canvasMouseDown : function(event) {
+            const position = GOL.helpers.mousePosition(event);
+            GOL.canvas.switchCell(position[0], position[1]);
+            GOL.handlers.lastX = position[0];
+            GOL.handlers.lastY = position[1];
+            GOL.handlers.mouseDown = true;
+          },
+
+
+          /**
+           *
+           */
+          canvasMouseUp : function() {
+            GOL.handlers.mouseDown = false;
+          },
+
+
+          /**
+           *
+           */
+          canvasMouseMove : function(event) {
+            if (GOL.handlers.mouseDown) {
+              const position = GOL.helpers.mousePosition(event);
+              if ((position[0] !== GOL.handlers.lastX) || (position[1] !== GOL.handlers.lastY)) {
+                GOL.canvas.switchCell(position[0], position[1]);
+                GOL.handlers.lastX = position[0];
+                GOL.handlers.lastY = position[1];
+              }
+            }
+          },
+
+          /**
+           *
+           */
+          dispatchForCode : function(event) {
+            let key;
+
+            if (event.key !== undefined) {
+              key = event.key;
+            } else if (event.keyIdentifier !== undefined) {
+              key = event.keyIdentifier;
+            } else if (event.keyCode !== undefined) {
+              key = event.keyCode;
+            }
+
+            return key;
+          },
+
+          /**
+           *
+           */
+          keyboard : function(e) {
+            let event = e;
+            if (!event) {
+              event = window.event;
+            }
+
+            let key = GOL.handlers.dispatchForCode(event);
+
+            if ([67, 'c', 'C', 'KeyC'].includes(key)) {  // Key: C
+              GOL.handlers.buttons.clear();
+            } else if ([83, 's', 'S', 'KeyS'].includes(key)) {
+              GOL.handlers.buttons.step();
+            } else if ([32, ' ', 'Space'].includes(key)) { // Key: (Space character)
+              GOL.handlers.buttons.run();
+            } else if ([13, 'Enter'].includes(key)) {
+              GOL.handlers.buttons.run();
+            } else if ([37, 'ArrowLeft'].includes(key)) {
+              GOL.handlers.buttons.decrementSpeed();
+            } else if ([39, 'ArrowRight'].includes(key)) {
+              GOL.handlers.buttons.incrementSpeed();
+            } else if ([79, 'o', 'O', 'KeyO'].includes(key)) {
+              GOL.handlers.buttons.colors();
+            } else if ([84, 't', 'T', 'KeyT'].includes(key)) {
+              GOL.handlers.buttons.trail();
+            } else if ([71, 'g', 'G', 'KeyG'].includes(key)) {
+              GOL.handlers.buttons.grid();
+            }
+          },
+
+          /**
+           * getCookie
+           */
+
+          getCookie : function(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+          },
+
+          /**
+           * defineStyle
+           */
+          defineStyle : function() {
+            return 0;
+          }, 
+
+          buttons : {
+
+            /**
+             * Button Handler - Run
+             */
+            run : function() {
+              GOL.handlers.buttons.setSpeed();
+
+              GOL.running = !GOL.running;
+              if (GOL.running) {
+                GOL.nextStep();
+                document.getElementById('buttonRun').value = 'Stop';
+              } else {
+                document.getElementById('buttonRun').value = 'Run';
+              }
+            },
+
+
+            /**
+             * Button Handler - Next Step - One Step only
+             */
+            step : function() {
+              if (!GOL.running) {
+                GOL.nextStep();
+              }
+            },
+
+
+            /**
+             * Button Handler - Clear World
+             */
+            clear : function() {
+              if (GOL.running) {
+                GOL.clear.schedule = true;
+                GOL.running = false;
+                document.getElementById('buttonRun').value = 'Run';
+              } else {
+                GOL.cleanUp();
+              }
+            },
+
+
+            /**
+             * Button Handler - Remove/Add Trail
+             */
+            trail : function() {
+              GOL.trail.current = !GOL.trail.current;
+              if (GOL.running) {
+                GOL.trail.schedule = true;
+              } else {
+                GOL.canvas.drawWorld();
+              }
+            },
+
+
+            /**
+             *
+             */
+            colors : function() {
+              GOL.colors.current = (GOL.colors.current + 1) % GOL.colors.schemes.length;
+              if (GOL.running) {
+                GOL.colors.schedule = true; // Delay redraw
+              } else {
+                GOL.canvas.drawWorld(); // Force complete redraw
+              }
+            },
+
+            /**
+             *
+             */
+            setSpeed : function() {
+              let speed = parseInt(document.getElementById('speed-tracker').innerHTML) || GOL.initialSpeed;
+              if (speed > 155) {
+                speed = 150
+              } else if (speed < 1) {
+                speed = 1
+              }
+              GOL.currentSleepTime = 1000 / speed;
+              document.getElementById('speed-tracker').innerHTML = speed
+            },
+
+            /**
+             *
+             */
+            incrementSpeed : function() {
+              let speed = parseInt(document.getElementById('speed-tracker').innerHTML) || GOL.initialSpeed;
+              if (1 <= speed && speed < 15) {
+                speed += 1;
+              } else if (15 <= speed && speed <= 150) {
+                speed += 5;
+              } else {
+                speed = 150;
+              }
+              document.getElementById('speed-tracker').innerHTML = speed;
+              GOL.handlers.buttons.setSpeed()
+            },
+
+            /**
+             *
+             */
+            decrementSpeed : function() {
+              let speed = parseInt(document.getElementById('speed-tracker').innerHTML) || GOL.initialSpeed;
+              if (15 < speed && speed <= 150) {
+                speed -= 5;
+              } else if (1 < speed && speed <= 15) {
+                speed -= 1;
+              } else {
+                speed = 1;
+              }
+              document.getElementById('speed-tracker').innerHTML = speed;
+              GOL.handlers.buttons.setSpeed()
+            },
+
+
+            /**
+             *
+             */
+            grid : function() {
+              GOL.grid.current = (GOL.grid.current + 1) % GOL.grid.schemes.length;
+              if (GOL.running) {
+                GOL.grid.schedule = true; // Delay redraw
+              } else {
+                GOL.canvas.drawWorld(); // Force complete redraw
+              }
+            },
+          }
+        },
+
+
+        /** ****************************************************************************************************************************
+         *
+         */
+        canvas: {
+
+          context : null,
+          width : null,
+          height : null,
+          age : null,
+          cellSize : null,
+          cellSpace : null,
+
+
+          /**
+           * init
+           */
+          init : function() {
+
+            this.canvas = document.getElementById('canvas');
+            this.context = this.canvas.getContext('2d');
+
+            this.cellSize = GOL.zoom.schemes[GOL.zoom.current].cellSize;
+            this.cellSpace = 1;
+
+            GOL.helpers.registerEvent(this.canvas, 'mousedown', GOL.handlers.canvasMouseDown, false);
+            GOL.helpers.registerEvent(document, 'mouseup', GOL.handlers.canvasMouseUp, false);
+            GOL.helpers.registerEvent(this.canvas, 'mousemove', GOL.handlers.canvasMouseMove, false);
+
+            this.clearWorld();
+          },
+
+
+          /**
+           * clearWorld
+           */
+          clearWorld : function () {
+            let i, j;
+
+            // Init ages (Canvas reference)
+            this.age = [];
+            for (i = 0; i < GOL.columns; i++) {
+              this.age[i] = [];
+              for (j = 0; j < GOL.rows; j++) {
+                this.age[i][j] = 0; // Dead
+              }
+            }
+          },
+
+
+          /**
+           * drawWorld
+           */
+          drawWorld : function() {
+            let i, j;
+
+            // Special no grid case
+            if (GOL.grid.schemes[GOL.grid.current].color === '') {
+              this.setNoGridOn();
+              this.width = this.height = 0;
+            } else {
+              this.setNoGridOff();
+              this.width = this.height = 1;
+            }
+
+            // Dynamic canvas size
+            this.width = this.width + (this.cellSpace * GOL.columns) + (this.cellSize * GOL.columns);
+            this.canvas.setAttribute('width', this.width);
+
+            this.height = this.height + (this.cellSpace * GOL.rows) + (this.cellSize * GOL.rows);
+            this.canvas.getAttribute('height', this.height);
+
+            // Fill background
+            this.context.fillStyle = GOL.grid.schemes[GOL.grid.current].color;
+            this.context.fillRect(0, 0, this.width, this.height);
+
+            for (i = 0 ; i < GOL.columns; i++) {
+              for (j = 0 ; j < GOL.rows; j++) {
+                if (GOL.listLife.isAlive(i, j)) {
+                  this.drawCell(i, j, true);
+                } else {
+                  this.drawCell(i, j, false);
+                }
+              }
+            }
+
+            // Change title color
+            const title = document.querySelector('#title');
+            title.style.setProperty('color', GOL.colors.schemes[GOL.colors.current].main);
+
+            // Fill buttons
+            const buttons = document.querySelectorAll('button');
+
+            Object.keys(buttons).forEach((index) => {
+              buttons[index].style.setProperty('background', GOL.colors.schemes[GOL.colors.current].main);
+            })
+          },
+
+
+          /**
+           * setNoGridOn
+           */
+          setNoGridOn : function() {
+            this.cellSize = GOL.zoom.schemes[GOL.zoom.current].cellSize + 1;
+            this.cellSpace = 0;
+          },
+
+
+          /**
+           * setNoGridOff
+           */
+          setNoGridOff : function() {
+            this.cellSize = GOL.zoom.schemes[GOL.zoom.current].cellSize;
+            this.cellSpace = 1;
+          },
+
+
+          /**
+           * drawCell
+           */
+          drawCell : function (i, j, alive) {
+
+            if (alive) {
+
+              if (this.age[i][j] > -1)
+                this.context.fillStyle = GOL.colors.schemes[GOL.colors.current].alive[this.age[i][j] % GOL.colors.schemes[GOL.colors.current].alive.length];
+
+            } else {
+              if (GOL.trail.current && this.age[i][j] < 0) {
+                this.context.fillStyle = GOL.colors.schemes[GOL.colors.current].trail[(this.age[i][j] * -1) % GOL.colors.schemes[GOL.colors.current].trail.length];
+              } else {
+                this.context.fillStyle = GOL.colors.schemes[GOL.colors.current].dead;
+              }
+            }
+
+            this.context.fillRect(this.cellSpace + (this.cellSpace * i) + (this.cellSize * i), this.cellSpace + (this.cellSpace * j) + (this.cellSize * j), this.cellSize, this.cellSize);
+
+          },
+
+
+          /**
+           * switchCell
+           */
+          switchCell : function(i, j) {
+            if(GOL.listLife.isAlive(i, j)) {
+              this.changeCelltoDead(i, j);
+              GOL.listLife.removeCell(i, j, GOL.listLife.actualState);
+            }else {
+              this.changeCelltoAlive(i, j);
+              GOL.listLife.addCell(i, j, GOL.listLife.actualState);
+            }
+          },
+
+
+          /**
+           * keepCellAlive
+           */
+          keepCellAlive : function(i, j) {
+            if (i >= 0 && i < GOL.columns && j >=0 && j < GOL.rows) {
+              this.age[i][j]++;
+              this.drawCell(i, j, true);
+            }
+          },
+
+
+          /**
+           * changeCelltoAlive
+           */
+          changeCelltoAlive : function(i, j) {
+            if (i >= 0 && i < GOL.columns && j >=0 && j < GOL.rows) {
+              this.age[i][j] = 1;
+              this.drawCell(i, j, true);
+            }
+          },
+
+
+          /**
+           * changeCelltoDead
+           */
+          changeCelltoDead : function(i, j) {
+            if (i >= 0 && i < GOL.columns && j >=0 && j < GOL.rows) {
+              this.age[i][j] = -this.age[i][j]; // Keep trail
+              this.drawCell(i, j, false);
+            }
+          }
+
+        },
+
+
+        /** ****************************************************************************************************************************
+         *
+         */
+        listLife : {
+
+          actualState : [],
+          redrawList : [],
+
+
+          /**
+           *
+           */
+          init : function () {
+            this.actualState = [];
+          },
+
+
+          /**
+           *
+           NOTE: The following code is slower than the used one.
+
+           (...)
+
+           if (allDeadNeighbours[key] === undefined) {
+      allDeadNeighbours[key] = {
+        x: deadNeighbours[m][0],
+        y: deadNeighbours[m][1],
+        i: 1
+      };
+    } else {
+      allDeadNeighbours[key].i++;
+    }
+
+           (...)
+
+           // Process dead neighbours
+           for (key in allDeadNeighbours) {
+
+      if (allDeadNeighbours[key].i === 3) { // Add new Cell
+
+      this.addCell(allDeadNeighbours[key].x, allDeadNeighbours[key].y, newState);
+      alive++;
+      this.redrawList.push([allDeadNeighbours[key].x, allDeadNeighbours[key].y, 1]);
+      }
+    }
+           */
+          nextGeneration : function() {
+            let x, y, i, j, m, n, key, t1, t2, alive = 0, neighbours, deadNeighbours, allDeadNeighbours = {}, newState = [];
+            this.redrawList = [];
+
+            for (i = 0; i < this.actualState.length; i++) {
+              this.topPointer = 1;
+              this.bottomPointer = 1;
+
+              for (j = 1; j < this.actualState[i].length; j++) {
+                x = this.actualState[i][j];
+                y = this.actualState[i][0];
+
+                // Possible dead neighbours
+                deadNeighbours = [[x-1, y-1, 1], [x, y-1, 1], [x+1, y-1, 1], [x-1, y, 1], [x+1, y, 1], [x-1, y+1, 1], [x, y+1, 1], [x+1, y+1, 1]];
+
+                // Get number of live neighbours and remove alive neighbours from deadNeighbours
+                neighbours = this.getNeighboursFromAlive(x, y, i, deadNeighbours);
+
+                // Join dead neighbours to check list
+                for (m = 0; m < 8; m++) {
+                  if (deadNeighbours[m] !== undefined) {
+                    key = deadNeighbours[m][0] + ',' + deadNeighbours[m][1]; // Create hashtable key
+
+                    if (allDeadNeighbours[key] === undefined) {
+                      allDeadNeighbours[key] = 1;
+                    } else {
+                      allDeadNeighbours[key]++;
+                    }
+                  }
+                }
+
+                if (!(neighbours === 0 || neighbours === 1 || neighbours > 3)) {
+                  this.addCell(x, y, newState);
+                  alive++;
+                  this.redrawList.push([x, y, 2]); // Keep alive
+                } else {
+                  this.redrawList.push([x, y, 0]); // Kill cell
+                }
+              }
+            }
+
+            // Process dead neighbours
+            for (key in allDeadNeighbours) {
+              if (allDeadNeighbours[key] === 3) { // Add new Cell
+                key = key.split(',');
+                t1 = parseInt(key[0], 10);
+                t2 = parseInt(key[1], 10);
+
+                this.addCell(t1, t2, newState);
+                alive++;
+                this.redrawList.push([t1, t2, 1]);
+              }
+            }
+
+            this.actualState = newState;
+
+            return alive;
+          },
+
+
+          topPointer : 1,
+          middlePointer : 1,
+          bottomPointer : 1,
+
+          /**
+           *
+           */
+          getNeighboursFromAlive : function (x, y, i, possibleNeighboursList) {
+            let neighbours = 0, k;
+
+            // Top
+            if (this.actualState[i-1] !== undefined) {
+              if (this.actualState[i-1][0] === (y - 1)) {
+                for (k = this.topPointer; k < this.actualState[i-1].length; k++) {
+
+                  if (this.actualState[i-1][k] >= (x-1) ) {
+
+                    if (this.actualState[i-1][k] === (x - 1)) {
+                      possibleNeighboursList[0] = undefined;
+                      this.topPointer = k + 1;
+                      neighbours++;
+                    }
+
+                    if (this.actualState[i-1][k] === x) {
+                      possibleNeighboursList[1] = undefined;
+                      this.topPointer = k;
+                      neighbours++;
+                    }
+
+                    if (this.actualState[i-1][k] === (x + 1)) {
+                      possibleNeighboursList[2] = undefined;
+
+                      if (k === 1) {
+                        this.topPointer = 1;
+                      } else {
+                        this.topPointer = k - 1;
+                      }
+
+                      neighbours++;
+                    }
+
+                    if (this.actualState[i-1][k] > (x + 1)) {
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+
+            // Middle
+            for (k = 1; k < this.actualState[i].length; k++) {
+              if (this.actualState[i][k] >= (x - 1)) {
+
+                if (this.actualState[i][k] === (x - 1)) {
+                  possibleNeighboursList[3] = undefined;
+                  neighbours++;
+                }
+
+                if (this.actualState[i][k] === (x + 1)) {
+                  possibleNeighboursList[4] = undefined;
+                  neighbours++;
+                }
+
+                if (this.actualState[i][k] > (x + 1)) {
+                  break;
+                }
+              }
+            }
+
+            // Bottom
+            if (this.actualState[i+1] !== undefined) {
+              if (this.actualState[i+1][0] === (y + 1)) {
+                for (k = this.bottomPointer; k < this.actualState[i+1].length; k++) {
+                  if (this.actualState[i+1][k] >= (x - 1)) {
+
+                    if (this.actualState[i+1][k] === (x - 1)) {
+                      possibleNeighboursList[5] = undefined;
+                      this.bottomPointer = k + 1;
+                      neighbours++;
+                    }
+
+                    if (this.actualState[i+1][k] === x) {
+                      possibleNeighboursList[6] = undefined;
+                      this.bottomPointer = k;
+                      neighbours++;
+                    }
+
+                    if (this.actualState[i+1][k] === (x + 1)) {
+                      possibleNeighboursList[7] = undefined;
+
+                      if (k == 1) {
+                        this.bottomPointer = 1;
+                      } else {
+                        this.bottomPointer = k - 1;
+                      }
+
+                      neighbours++;
+                    }
+
+                    if (this.actualState[i+1][k] > (x + 1)) {
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+
+            return neighbours;
+          },
+
+
+          /**
+           *
+           */
+          isAlive : function(x, y) {
+            let i, j;
+
+            for (i = 0; i < this.actualState.length; i++) {
+              if (this.actualState[i][0] === y) {
+                for (j = 1; j < this.actualState[i].length; j++) {
+                  if (this.actualState[i][j] === x) {
+                    return true;
+                  }
+                }
+              }
+            }
+            return false;
+          },
+
+
+          /**
+           *
+           */
+          removeCell : function(x, y, state) {
+            let i, j;
+
+            for (i = 0; i < state.length; i++) {
+              if (state[i][0] === y) {
+
+                if (state[i].length === 2) { // Remove all Row
+                  state.splice(i, 1);
+                } else { // Remove Element
+                  for (j = 1; j < state[i].length; j++) {
+                    if (state[i][j] === x) {
+                      state[i].splice(j, 1);
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+
+          /**
+           *
+           */
+          addCell : function(x, y, state) {
+            if (state.length === 0) {
+              state.push([y, x]);
+              return;
+            }
+
+            let k, n, m, tempRow, newState = [], added;
+
+            if (y < state[0][0]) { // Add to Head
+              newState = [[y,x]];
+              for (k = 0; k < state.length; k++) {
+                newState[k+1] = state[k];
+              }
+
+              for (k = 0; k < newState.length; k++) {
+                state[k] = newState[k];
+              }
+
+            } else if (y > state[state.length - 1][0]) { // Add to Tail
+              state[state.length] = [y, x];
+
+            } else { // Add to Middle
+
+              for (n = 0; n < state.length; n++) {
+                if (state[n][0] === y) { // Level Exists
+                  tempRow = [];
+                  added = false;
+                  for (m = 1; m < state[n].length; m++) {
+                    if ((!added) && (x < state[n][m])) {
+                      tempRow.push(x);
+                      added = !added;
+                    }
+                    tempRow.push(state[n][m]);
+                  }
+                  tempRow.unshift(y);
+                  if (!added) {
+                    tempRow.push(x);
+                  }
+                  state[n] = tempRow;
+                  return;
+                }
+
+                if (y < state[n][0]) { // Create Level
+                  newState = [];
+                  for (k = 0; k < state.length; k++) {
+                    if (k === n) {
+                      newState[k] = [y,x];
+                      newState[k+1] = state[k];
+                    } else if (k < n) {
+                      newState[k] = state[k];
+                    } else if (k > n) {
+                      newState[k+1] = state[k];
+                    }
+                  }
+
+                  for (k = 0; k < newState.length; k++) {
+                    state[k] = newState[k];
+                  }
+
+                  return;
+                }
+              }
+            }
+          }
+
+        },
+
+
+        /** ****************************************************************************************************************************
+         *
+         */
+        helpers : {
+          urlParameters : null, // Cache
+
+
+          /**
+           * Return a random integer from [min, max]
+           */
+          random : function(min, max) {
+            return min <= max ? min + Math.round(Math.random() * (max - min)) : null;
+          },
+
+
+          /**
+           * Get URL Parameters
+           */
+          getUrlParameter : function(name) {
+            if (this.urlParameters === null) { // Cache miss
+              var hash, hashes, i;
+
+              this.urlParameters = [];
+              hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+
+              for (i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                this.urlParameters.push(hash[0]);
+                this.urlParameters[hash[0]] = hash[1];
+              }
+            }
+
+            return this.urlParameters[name];
+          },
+
+
+          /**
+           * Register Event
+           */
+          registerEvent : function (element, event, handler, capture) {
+            if (/msie/i.test(navigator.userAgent)) {
+              element.attachEvent('on' + event, handler);
+            } else {
+              element.addEventListener(event, handler, capture);
+            }
+          },
+
+
+          /**
+           *
+           */
+          mousePosition : function (e) {
+            // http://www.malleus.de/FAQ/getImgMousePos.html
+            // http://www.quirksmode.org/js/events_properties.html#position
+            let event, x, y, domObject, posx = 0, posy = 0, top = 0, left = 0, cellSize = GOL.zoom.schemes[GOL.zoom.current].cellSize + 1;
+
+            event = e;
+            if (!event) {
+              event = window.event;
+            }
+
+            if (event.pageX || event.pageY) 	{
+              posx = event.pageX;
+              posy = event.pageY;
+            } else if (event.clientX || event.clientY) 	{
+              posx = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+              posy = event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+            }
+
+            domObject = event.target || event.srcElement;
+
+            while ( domObject.offsetParent ) {
+              left += domObject.offsetLeft;
+              top += domObject.offsetTop;
+              domObject = domObject.offsetParent;
+            }
+
+            domObject.pageTop = top;
+            domObject.pageLeft = left;
+
+            x = Math.ceil(((posx - domObject.pageLeft)/cellSize) - 1);
+            y = Math.ceil(((posy - domObject.pageTop)/cellSize) - 1);
+
+            return [x, y];
+          },
+        }
+
+      };
+
+
+      /**
+       * Init on 'load' event
+       */
+      GOL.helpers.registerEvent(window, 'load', function () {
+        GOL.init();
+      }, false);
+
+    }());
+
+    </script>
+  </div>
+  </body>
+</html>
+
+
+
