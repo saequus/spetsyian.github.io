@@ -1,28 +1,12 @@
-import Link from 'next/link'
-import { Button } from '../components/buttons/button'
+import { Button } from './buttons/button'
 
 type Props = {
   title: string
-  slug: string
 }
 
-const MainBlock = ({
-  slug,
-  title,
-}: Props) => {
+const MainPageBlock = () => {
   return (
     <section>
-      <div className="md:grid md:grid-cols-2 md:gap-x-16 lg:gap-x-8 mb-20 md:mb-28">
-        <div>
-          <h3 className="mb-4 text-4xl lg:text-6xl leading-tight">
-            <Link as={`/posts/${slug}`} href="/posts/[slug]">
-              <a className="hover:underline">{title}</a>
-            </Link>
-          </h3>
-        </div>
-
-      </div>
-
       <div className='m-auto'>
 
         <div className='flex flex-col text-center tracking-wider'>
@@ -77,4 +61,4 @@ const MainBlock = ({
   )
 }
 
-export default MainBlock
+export default MainPageBlock
