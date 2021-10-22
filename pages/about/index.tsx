@@ -20,28 +20,44 @@ const About = ({ content, lang, preface, welcomeMsg }: Props) => {
       <Container>
         <Header />
 
-        <div className='w-2/3 m-auto'>
-          <h1 className='mb-4 mt-5 text-3xl text-center font-bold m-2 orange shadow-t-bl uppercase'>
+        <div className='lg:w-2/3 md:w-5/6 m-auto'>
+          <h1 className='
+            mb-4 mt-5 text-3xl text-center font-bold orange shadow-t-bl uppercase
+            lg:text-3xl
+          '>
             {welcomeMsg}
           </h1>
     
-          <div className='pt-2 pb-2 mb-6 text-xl flex font-extralight justify-between gray-600'>
-            <a className='hover:underline' href='https://github.com/saequus'>GitHub</a>
-            <div className='no-show-mobile'>|</div>
-            <a className='hover:underline' href='https://www.linkedin.com/in/spetsyian/'>LinkedIn</a>
-            <div className='no-show-mobile'>|</div>
-            <a className='hover:underline' href='https://leetcode.com/saequus/'>LeetCode</a>
-            <div className='no-show-mobile'>|</div>
-            <a className='hover:underline' href='https://www.hackerrank.com/saequus'>HackerRank</a>
-            <div className='no-show-mobile'>|</div>
-            <a className='hover:underline' href='https://medium.com/saequus'>Medium Blog</a>
+          <div className='
+            pt-2 pb-2 mb-6 flex font-extralight gray-600 flex-wrap flex-wrap text-2xl
+            lg:justify-between lg:flex-nowrap lg:text-xl
+            sm:flex-wrap sm:flex-wrap sm:text-xl
+          '>
+            <a className='p-2 hover:underline' href='https://github.com/saequus'>GitHub</a>
+            <div className='lg:block hidden'>|</div>
+            <a className='p-2 hover:underline' href='https://www.linkedin.com/in/spetsyian/'>LinkedIn</a>
+            <div className='lg:block hidden'>|</div>
+            <a className='p-2 over:underline' href='https://leetcode.com/saequus/'>LeetCode</a>
+            <div className='lg:block hidden'>|</div>
+            <a className='p-2 hover:underline' href='https://www.hackerrank.com/saequus'>HackerRank</a>
+            <div className='lg:block hidden'>|</div>
+            <a className='p-2 hover:underline' href='https://medium.com/saequus'>Medium Blog</a>
           </div>
           
-          <div className='flex justify-between'>
-            <img className='w-3/5 flex-1' src='/assets/img/av.webp' alt='Profile photo' />
+          <div className='
+            block
+            md:flex md:justify-between'
+          >
+            <img className='md:w-3/5 w-full flex-1' src='/assets/img/av.webp' alt='Profile photo' />
 
-            <div className='ml-3 flex-1 gray-600'>
-              <MarkdownBody content={preface} classParam="font-extralight max-w-2xl mx-auto" />
+            <div className='
+              flex-1 gray-600 text-xl mt-3
+              lg:ml-3 lg:mt-0'
+            >
+              <MarkdownBody content={preface} classParam="
+                font-extralight max-w-2xl mx-auto 
+                "
+              />
             </div>
           </div>
           
