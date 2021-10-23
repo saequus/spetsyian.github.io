@@ -16,7 +16,7 @@ type Props = {
 const About = ({ content, lang, preface, welcomeMsg }: Props) => {
   const router = useRouter()
   return (
-    <Layout>
+    <Layout lang={lang}>
       <Container>
         <Header />
 

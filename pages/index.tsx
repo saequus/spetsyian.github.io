@@ -6,7 +6,7 @@ import MainPageBlock from '../components/main-page-block'
 const Index = () => {
   return (
     <>
-      <Layout>
+      <Layout lang='en'>
         <Head>
           <title>Spetsyian | Full Stack Engineer</title>
         </Head>

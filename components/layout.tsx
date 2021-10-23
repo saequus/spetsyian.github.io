@@ -5,9 +5,10 @@ import Meta from './meta'
 type Props = {
   preview?: boolean
   children: React.ReactNode
+  lang: string
 }
 
-const Layout = ({ preview, children }: Props) => {
+const Layout = ({ preview, children, lang }: Props) => {
   return (
     <>
       <Meta />
@@ -15,7 +16,7 @@ const Layout = ({ preview, children }: Props) => {
         <div className='mb-8'></div>
         <main>{children}</main>
       </div>
-      <Footer />
+      <Footer lang={lang} />
     </>
   )
 }

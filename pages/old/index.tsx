@@ -10,14 +10,15 @@ import Post from '../../types/post'
 
 type Props = {
   allPosts: Post[]
+  lang: string
 }
 
-const Index = ({ allPosts }: Props) => {
+const Index = ({ allPosts, lang }: Props) => {
   const heroPost = allPosts[0]
   const morePosts = allPosts.slice(1)
   return (
     <>
-      <Layout>
+      <Layout lang={lang}>
         <Head>
           <title>Next.js Blog Example with {CMS_NAME}</title>
         </Head>
