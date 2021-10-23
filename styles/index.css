@@ -25,6 +25,9 @@
 .shadow-t-bl {
   text-shadow: 0 0 1px black;
 }
+.social_icon {
+  fill: rgba(75, 85, 99);
+}
 
 
 
