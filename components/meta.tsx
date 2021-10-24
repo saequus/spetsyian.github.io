@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { CMS_NAME, HOME_OG_IMAGE_URL } from '../lib/constants'
+import { SITE_NAME, HOME_OG_IMAGE_URL } from '../lib/constants'
 
 const Meta = () => {
   return (
@@ -7,7 +7,7 @@ const Meta = () => {
       <link
         rel="apple-touch-icon"
         sizes="180x180"
-        href="/assets/favicon/apple-touch-icon.png"
+        href="/assets/favicon/favicon-72x73.png"
       />
       <link
         rel="icon"
@@ -24,17 +24,17 @@ const Meta = () => {
       <link rel="manifest" href="/assets/favicon/site.webmanifest" />
       <link
         rel="mask-icon"
-        href="/assets/favicon/safari-pinned-tab.svg"
+        href="/assets/favicon/favicon-72x73"
         color="#000000"
       />
-      <link rel="shortcut icon" href="/assets/favicon/favicon.ico" />
+      <link rel="shortcut icon" href="/assets/favicon/favicon.png" />
       <meta name="msapplication-TileColor" content="#000000" />
       <meta name="msapplication-config" content="/assets/favicon/browserconfig.xml" />
       <meta name="theme-color" content="#000" />
       <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
       <meta
         name="description"
-        content={`A statically generated blog example using Next.js and ${CMS_NAME}.`}
+        content={`${SITE_NAME} | Personal page`}
       />
       <meta property="og:image" content={HOME_OG_IMAGE_URL} />
     </Head>

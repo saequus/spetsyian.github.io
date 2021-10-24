@@ -6,10 +6,23 @@
   border-radius: 0.125rem;
   transition: all 0.2s ease-in-out;
   font-weight: 200;
-  width: calc(100% / 6); 
+  min-width: 100px; 
 }
 .buttonStyle:hover {
   color: #F57C00;
   border: 1pt solid #F57C00;
   transition: all 0.2s ease-in-out;
 }
+
+.buttonStyle:active {
+  background: #F57C00;
+  color: white;
+}
+
+
+@media (max-width: 768px){
+  .buttonStyle {
+    width: 100%;
+  }
+}
+

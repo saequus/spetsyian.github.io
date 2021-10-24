@@ -20,7 +20,10 @@ const About = ({ content, lang, preface, welcomeMsg }: Props) => {
       <Container>
         <Header />
 
-        <div className='lg:w-2/3 md:w-5/6 m-auto'>
+        <div className='
+          m-auto
+          lg:w-2/3
+          '>
           <h1 className='
             mb-4 mt-5 text-3xl text-center font-bold orange shadow-t-bl uppercase
             lg:text-3xl
@@ -40,8 +43,6 @@ const About = ({ content, lang, preface, welcomeMsg }: Props) => {
             <a className='p-2 over:underline' href='https://leetcode.com/saequus/'>LeetCode</a>
             <div className='lg:block hidden'>|</div>
             <a className='p-2 hover:underline' href='https://www.hackerrank.com/saequus'>HackerRank</a>
-            <div className='lg:block hidden'>|</div>
-            <a className='p-2 hover:underline' href='https://medium.com/saequus'>Medium Blog</a>
           </div>
           
           <div className='
@@ -62,7 +63,7 @@ const About = ({ content, lang, preface, welcomeMsg }: Props) => {
           </div>
           
 
-          <MarkdownBody content={content} classParam="gray-600 font-extralight"/>
+          <MarkdownBody content={content} classParam="gray-600 font-extralight mb-5"/>
           
 
         </div>

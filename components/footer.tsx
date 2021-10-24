@@ -42,6 +42,7 @@ const Footer = ({lang}: Props) => {
             <Social
               facebook_username='slava.spetsyian'
               telegram_username='slava_spetsyian'
+              github_username='saequus'
               twitter_username='slava_spetsyian'
             />
           </div>
