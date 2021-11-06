@@ -7,7 +7,7 @@ const Meta = () => {
       <link
         rel="apple-touch-icon"
         sizes="180x180"
-        href="/assets/favicon/favicon-72x73.png"
+        href="/assets/favicon/favicon-72x72.png"
       />
       <link
         rel="icon"
