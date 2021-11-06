@@ -1,4 +1,3 @@
-import { isTypeElement } from 'typescript'
 import styles from './Button.module.css'
 
 type Props = {

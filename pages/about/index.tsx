@@ -2,7 +2,6 @@ import { useRouter } from 'next/router'
 import Header from '../../components/header'
 import Layout from '../../components/layout'
 import Container from '../../components/container'
-import { getEnPostBySlug } from '../../lib/api'
 import markdownToHtml from '../../lib/markdownToHtml'
 import MarkdownBody from '../../components/markdown-body'
 
@@ -55,15 +54,36 @@ const About = ({ content, lang, preface, welcomeMsg }: Props) => {
               flex-1 gray-600 text-xl mt-3
               lg:ml-3 lg:mt-0'
             >
-              <MarkdownBody content={preface} classParam="
-                font-extralight max-w-2xl mx-auto 
-                "
-              />
+              <div className="max-w-2xl mx-auto  lg:font-extralight">
+                The best time to start is yesterday.
+                <br/>
+                Today is the best tomorrow.
+                <br/>
+                Knowledge and connections are the most profitable investment.
+                <br/>
+                People are the most valuable asset.
+                <br/>
+                Money is the most liquid resource.
+                <br/>
+                Joining forces is the most effective way.
+              </div>
             </div>
           </div>
           
 
-          <MarkdownBody content={content} classParam="gray-600 font-extralight mb-5"/>
+          <div className="gray-600 text-2xl mb-5 lg:font-extralight lg:text-xl">
+            <h1 className='font-bold my-3'>Applied Programming</h1>
+            <p>Python, JavaScript</p>
+            
+            <h1 className='font-bold my-3'>Web Development & API</h1>
+            <p>Django, Node, Express, Django Rest Framework, CSS/SASS/LESS, Vue.js, Flask, Falcon, FastAPI, , Jekyll.</p>
+            
+            <h1 className='font-bold my-3'>Databases & Deployment</h1>  
+            <p>PostreSQL, MongoDB, Nginx, Gunicorn, Kubernetes</p>
+            
+            <h1 className='font-bold my-3'>About me</h1>
+            <p>Full Stack Engineer. I like playing guitar, learning foreign languages, doing sports and reading.</p>
+          </div>
           
 
         </div>
@@ -89,22 +109,22 @@ export default About
 
 
 
-export async function getStaticProps() {
-  const aboutData = getEnPostBySlug('about', [
-    'lang',
-    'content',
-    'preface',
-    'welcomeMsg'
-  ])
-  const content = await markdownToHtml(aboutData.content || '')
+// export async function getStaticProps() {
+//   const aboutData = getNewPostBySlug('about', [
+//     'lang',
+//     'content',
+//     'preface',
+//     'welcomeMsg'
+//   ])
+//   const content = await markdownToHtml(aboutData.content || '')
 
-  return {
-    props: {
-      lang: aboutData.lang,
-      preface: aboutData.preface,
-      welcomeMsg: aboutData.welcomeMsg,
-      content,
-    },
-  }
-}
+//   return {
+//     props: {
+//       lang: aboutData.lang,
+//       preface: aboutData.preface,
+//       welcomeMsg: aboutData.welcomeMsg,
+//       content,
+//     },
+//   }
+// }
 

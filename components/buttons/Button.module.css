@@ -1,8 +1,8 @@
 .buttonStyle {
   padding: 8px;
   margin-top: 6px;
-  color: rgba(75, 85, 99);
-  border: 1pt solid rgba(75, 85, 99);
+  color: rgb(132, 145, 163);
+  border: 1pt solid rgba(132, 145, 164);
   border-radius: 0.125rem;
   transition: all 0.2s ease-in-out;
   font-weight: 200;
@@ -23,6 +23,8 @@
 @media (max-width: 768px){
   .buttonStyle {
     width: 100%;
+    border: 2pt solid rgba(132, 145, 164);
+    font-weight: 600;
   }
 }
 
