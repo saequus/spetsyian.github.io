@@ -64,7 +64,7 @@ const MainPageBlock = () => {
           '>
             <h1 className='text-3xl p-1 font-bold'>Blog</h1>
             <h3 className='mb-3 text-xl lg:font-extralight'>Blog in English and Russian</h3>
-            <Button href='/en/blog/' text='Visit'></Button>
+            <Button href='https://t.me/smart_productive' text='Visit'></Button>
           </div>
 
           <div className='p-8 mx-2 my-4 flex-auto rounded-sm chocolate-bg orange uppercase shadow-2xl
