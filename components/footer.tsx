@@ -1,5 +1,4 @@
 import Container from './container'
-import { EXAMPLE_PATH } from '../lib/constants'
 import Social from '../components/social'
 
 type Props = {
@@ -41,7 +40,7 @@ const Footer = ({lang}: Props) => {
           <div className='px-4 pt-2 lg:px-20'>
             <Social
               facebook_username='slava.spetsyian'
-              telegram_username='slava_spetsyian'
+              telegram_username='saequus'
               github_username='saequus'
               twitter_username='slava_spetsyian'
             />

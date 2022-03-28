@@ -25,7 +25,7 @@ const Social = ({...names}: Props) => {
 
       { (names.dribbble_username)
         ? <li>
-            <a href="https://dribbble.com/"{ ...names.dribbble_username }>
+            <a href={ "https://dribbble.com/" + names.dribbble_username }>
               <svg className="w-4 h-4 social_icon"><use xlinkHref="/assets/img/icons/social-icons.svg#dribbble"></use></svg>
               <span className="username">{names.dribbble_username}</span>
             </a>
@@ -36,7 +36,7 @@ const Social = ({...names}: Props) => {
       { (names.facebook_username)
         ?
         <li>
-          <a className='flex' href="https://www.facebook.com/"{ ...names.facebook_username }>
+          <a className='flex' href={"https://www.facebook.com/" + names.facebook_username }>
             <svg className="m-1 w-4 h-4 social_icon"><use xlinkHref="/assets/img/icons/social-icons.svg#facebook"></use></svg>
             <span className="username">{ names.facebook_username }</span>
           </a>
@@ -48,7 +48,7 @@ const Social = ({...names}: Props) => {
       { (names.facebook_username)
         ?
         <li>
-          <a className='flex' href="https://t.me/"{ ...names.telegram_username }>
+          <a className='flex' href={'https://t.me/' + names.telegram_username}>
             <svg className="m-1 w-4 h-4 social_icon"><use xlinkHref="/assets/img/icons/social-icons.svg#telegram"></use></svg>
             <span className="username">{ names.telegram_username }</span>
           </a>
@@ -60,7 +60,7 @@ const Social = ({...names}: Props) => {
       { (names.flickr_username)
         ?
         <li>
-          <a className='flex' href="https://www.flickr.com/photos/"{ ...names.flickr_username }>
+          <a className='flex' href={'https://www.flickr.com/photos/' + names.flickr_username }>
             <svg className="m-1 w-4 h-4 social_icon"><use xlinkHref="/assets/img/icons/social-icons.svg#flickr"></use></svg>
             <span className="username">{ names.flickr_username }</span>
           </a>
@@ -72,7 +72,7 @@ const Social = ({...names}: Props) => {
       { (names.github_username)
         ?
         <li>
-          <a className='flex' href="https://github.com/"{ ...names.github_username }>
+          <a className='flex' href={ 'https://github.com/' + names.github_username }>
             <svg className="m-1 w-4 h-4 social_icon"><use xlinkHref="/assets/img/icons/social-icons.svg#github"></use></svg>
             <span className="username">{ names.github_username }</span>
           </a>
@@ -85,7 +85,7 @@ const Social = ({...names}: Props) => {
       { (names.instagram_username)
         ?
         <li>
-          <a className='flex' href="https://instagram.com/"{ ...names.instagram_username }>
+          <a className='flex' href={ 'https://instagram.com/' + names.instagram_username }>
             <svg className="m-1 w-4 h-4 social_icon"><use xlinkHref="/assets/img/icons/social-icons.svg#instagram"></use></svg>
             <span className="username">{ names.instagram_username }</span>
           </a>
@@ -97,7 +97,7 @@ const Social = ({...names}: Props) => {
       { (names.linkedin_username)
         ?
         <li>
-          <a className='flex' href="https://github.com/"{ ...names.linkedin_username }>
+          <a className='flex' href={ 'https://github.com/' + names.linkedin_username }>
             <svg className="m-1 w-4 h-4 social_icon"><use xlinkHref="/assets/img/icons/social-icons.svg#linkedin"></use></svg>
             <span className="username">{ names.linkedin_username }</span>
           </a>
@@ -109,7 +109,7 @@ const Social = ({...names}: Props) => {
       { (names.pinterest_username)
         ?
         <li>
-          <a className='flex' href="https://www.pinterest.com/"{ ...names.pinterest_username }>
+          <a className='flex' href={ 'https://www.pinterest.com/' + names.pinterest_username }>
             <svg className="m-1 w-4 h-4 social_icon"><use xlinkHref="/assets/img/icons/social-icons.svg#pinterest"></use></svg>
             <span className="username">{ names.pinterest_username }</span>
           </a>
@@ -121,7 +121,7 @@ const Social = ({...names}: Props) => {
       { (names.twitter_username)
         ?
         <li>
-          <a className='flex' href="https://www.twitter.com/"{ ...names.twitter_username }>
+          <a className='flex' href={ 'https://www.twitter.com/' + names.twitter_username }>
             <svg className="m-1 w-4 h-4 social_icon"><use xlinkHref="/assets/img/icons/social-icons.svg#twitter"></use></svg>
             <span className="username">{ names.twitter_username }</span>
           </a>
@@ -133,7 +133,7 @@ const Social = ({...names}: Props) => {
       { (names.youtube_username)
         ?
         <li>
-          <a className='flex' href="https://youtube.com/"{ ...names.youtube_username }>
+          <a className='flex' href={ 'https://youtube.com/' + names.youtube_username }>
             <svg className="m-1 w-4 h-4 social_icon"><use xlinkHref="/assets/img/icons/social-icons.svg#youtube"></use></svg>
             <span className="username">{ names.youtube_username }</span>
           </a>
