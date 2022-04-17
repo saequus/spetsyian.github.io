@@ -28,7 +28,7 @@ const MainPageBlock = () => {
               </div>
               <span className='m-1 gray-600 hidden md:block'> &nbsp; | &nbsp; </span>
               <div className='m-1 orange'>
-                <a href='https://t.me/slava_spetsyian'>@slava_spetsyian</a>
+                <a href='https://t.me/saequus'>@saequus</a>
               </div>
             </div>
         </div>
