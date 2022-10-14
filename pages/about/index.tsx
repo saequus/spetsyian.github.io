@@ -2,8 +2,6 @@ import { useRouter } from 'next/router'
 import Header from '../../components/header'
 import Layout from '../../components/layout'
 import Container from '../../components/container'
-import markdownToHtml from '../../lib/markdownToHtml'
-import MarkdownBody from '../../components/markdown-body'
 
 type Props = {
   content: string
@@ -31,7 +29,7 @@ const About = ({ content, lang, preface, welcomeMsg }: Props) => {
           </h1>
     
           <div className='
-            pt-2 pb-2 mb-6 flex font-extralight gray-600 flex-wrap flex-wrap text-2xl
+            pt-2 pb-2 mb-6 flex gray-600 flex-wrap flex-wrap text-2xl
             lg:justify-between lg:flex-nowrap lg:text-xl
             sm:flex-wrap sm:flex-wrap sm:text-xl
           '>
@@ -52,9 +50,9 @@ const About = ({ content, lang, preface, welcomeMsg }: Props) => {
 
             <div className='
               flex-1 gray-600 text-xl mt-3
-              lg:ml-3 lg:mt-0'
+              lg:ml-4 md:ml-3 lg:mt-0'
             >
-              <div className="max-w-2xl mx-auto  lg:font-extralight">
+              <div className="max-w-2xl mx-auto">
                 The best time to start is yesterday.
                 <br/>
                 Today is the best tomorrow.
@@ -76,13 +74,13 @@ const About = ({ content, lang, preface, welcomeMsg }: Props) => {
             <p>Python, JavaScript</p>
             
             <h1 className='font-bold my-3'>Web Development & API</h1>
-            <p>Django, Node, Express, Django Rest Framework, CSS/SASS/LESS, Vue.js, Flask, Falcon, FastAPI, , Jekyll.</p>
+            <p>Django, Node, Express, Django Rest Framework, CSS/SASS/LESS, Vue.js, React, Flask, Falcon, FastAPI, Jekyll</p>
             
             <h1 className='font-bold my-3'>Databases & Deployment</h1>  
             <p>PostreSQL, MongoDB, Nginx, Gunicorn, Kubernetes</p>
             
             <h1 className='font-bold my-3'>About me</h1>
-            <p>Full Stack Engineer. I like playing guitar, learning foreign languages, doing sports and reading.</p>
+            <p>Full Stack Engineer. I like finance, guitar, foreign languages, sports and books</p>
           </div>
           
 
