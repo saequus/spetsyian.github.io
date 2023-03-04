@@ -1,13 +1,15 @@
 <html lang='en-us'>
   <head>
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;subset=cyrillic,cyrillic-ext,latin-ext' rel='stylesheet'>
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;900&display=swap" rel="stylesheet">
+    
     <title>Game Of Life</title>
 
     <style type='text/css'>
       body {
-        font-family: 'Open Sans', sans-serif;
-        font-size: 15px;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 18px;
         background: #F2F1F0;
         margin: 0;
       }
@@ -42,7 +44,15 @@
         justify-content: space-around;
       }
       .title-block {
-        padding-left: 45%;
+        display: flex;
+        padding: 1.3em 1em 1.3em 1em;
+        align-items: center;
+      } 
+      .title-block h2 {
+        padding: 0;
+        margin: 0;
+        text-align: center; 
+        width: 100%;
       } 
       .metrics-block {
         max-width: 1100px;
@@ -63,6 +73,7 @@
       }
       .control-panel-item {
         margin: 5px 5px 15px 5px;
+        text-align: center;
       }
       .explanatory-note-block {
         margin: 5px;
@@ -79,7 +90,10 @@
         margin: 5px 10px 0 0;
       }
       #canvas {
-        box-shadow: 0 8px 24px 0 rgba(84, 85, 104, .24);
+        border: 1px solid #d8d8d8;
+        padding: 30px;
+        background: #e4e4e4;
+        border-radius: 20px;
       }
       #speed-tracker {
         font-size: 16px;
@@ -107,7 +121,10 @@
     <div class='wrapper'>
 
     <div class='title-block'>
-      <h2 id='title'>Game Of Life</h2>
+      <div>
+        <a href='/'><img width='30px' src='/assets/favicon/favicon-72x72.png'></img></a>
+      </div>
+        <h2 id='title'>Game Of Life</h2>
     </div>
 
     <div class='canvas-block'>
@@ -140,7 +157,7 @@
 
       <div>
         <div class='control-panel-item'>
-          <button id='buttonRun'>Run</button>
+          <button id='buttonRun'>Run / Pause</button>
         </div>
         <div class='explanatory-note-block'>
           <small class='explanatory-note'>Press Enter, Space</small>
@@ -379,10 +396,9 @@
          */
         loadConfig : function() {
           const colorsMap = {
-            ostrovok : 0,
-            zenhotels : 1,
-            ratehawk : 2,
-            newb2b : 2,
+            gunmetal : 0,
+            green : 1,
+            violet : 2,
           };
 
           const st = GOL.handlers.defineStyle();
