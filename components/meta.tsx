@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import { SITE_NAME, HOME_OG_IMAGE_URL } from '../lib/constants'
 
 const Meta = () => {
   return (
@@ -32,11 +31,24 @@ const Meta = () => {
       <meta name="msapplication-config" content="/assets/favicon/browserconfig.xml" />
       <meta name="theme-color" content="#000" />
       <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
+
+      <meta property="og:url" content="https://spetsyian.com" data-shuvi-head="true" />
+      <meta property="og:type" content="website" data-shuvi-head="true" />
+      <meta property="og:title" content="Slava Spetsyian | Full Stack Engineer" data-shuvi-head="true" />
+      <meta property="og:site_name" content="spetsyian.com" data-shuvi-head="true" />
+      <meta property="og:image" content="https://spetsyian.com/assets/img/ogImage.webp" data-shuvi-head="true" />
       <meta
         name="description"
-        content={`${SITE_NAME} | Personal page`}
+        content="Meet Slava Spetsyian, a full stack engineer, growth hacker, and author with wide experience in finance and web-development."
+        data-shuvi-head="true"
       />
-      <meta property="og:image" content={HOME_OG_IMAGE_URL} />
+
+      <meta property="twitter:title" content="Slava Spetsyian | Full Stack Engineer" data-shuvi-head="true" />
+      <meta property="twitter:site" content="spetsyian.com" data-shuvi-head="true" />
+      <meta property="twitter:image" content="https://spetsyian.com/assets/img/ogImage.webp" data-shuvi-head="true" />
+      <meta property="twitter:image:src" content="https://spetsyian.com/assets/img/ogImage.webp" data-shuvi-head="true" />
+      <meta property="twitter:card" content="summary_large_image" data-shuvi-head="true" />
+
     </Head>
   )
 }
