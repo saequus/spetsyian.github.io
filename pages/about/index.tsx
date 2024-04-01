@@ -73,14 +73,20 @@ const About = ({ content, lang, preface, welcomeMsg }: Props) => {
             <h1 className='font-bold my-3'>Applied Programming</h1>
             <p>Python, JavaScript</p>
             
-            <h1 className='font-bold my-3'>Web Development & API</h1>
-            <p>Django, Node, Express, Django Rest Framework, CSS/SASS/LESS, Vue.js, React, Flask, Falcon, FastAPI, Jekyll</p>
+            <h1 className='font-bold my-3'>Cloud Platforms</h1>
+            <p> AWS, Google Cloud, Microsoft Azure</p>
             
-            <h1 className='font-bold my-3'>Databases & Deployment</h1>  
-            <p>PostreSQL, MongoDB, Nginx, Gunicorn, Kubernetes</p>
+            <h1 className='font-bold my-3'>Database</h1>
+            <p>PostgreSQL, MongoDB, Redis</p>
+
+            <h1 className='font-bold my-3'>Tools/Frameworks</h1>
+            <p>FastAPI, Kafka, React.js, Node.js, Express.js, Flask, Django, Vue.js, CSS/SASS/LESS, Matplotlib, Pandas & Numpy</p>
+
+            <h1 className='font-bold my-3'>DevOps</h1>
+            <p>Kubernetes, Docker, Nginx, WSGI/ASGI, Gunicorn, PM2, various clis</p>
             
             <h1 className='font-bold my-3'>About me</h1>
-            <p>Full Stack Engineer. I like finance, guitar, foreign languages, sports and books</p>
+            <p>Full Stack Engineer. I like financial topics, playing the guitar, speaking foreign languages, doing sports and reading books</p>
           </div>
           
 
