@@ -71,22 +71,22 @@ const About = ({ content, lang, preface, welcomeMsg }: Props) => {
 
           <div className="gray-600 text-2xl mb-5 lg:font-extralight lg:text-xl">
             <h1 className='font-bold my-3'>Applied Programming</h1>
-            <p>Python, JavaScript</p>
+            <p>Python, JavaScript, Rust, Go</p>
             
             <h1 className='font-bold my-3'>Cloud Platforms</h1>
-            <p> AWS, Google Cloud, Microsoft Azure</p>
+            <p>AWS, Google Cloud, Microsoft Azure</p>
             
             <h1 className='font-bold my-3'>Database</h1>
             <p>PostgreSQL, MongoDB, Redis</p>
 
-            <h1 className='font-bold my-3'>Tools/Frameworks</h1>
+            <h1 className='font-bold my-3'>Tools & Frameworks</h1>
             <p>FastAPI, Kafka, React.js, Node.js, Express.js, Flask, Django, Vue.js, CSS/SASS/LESS, Matplotlib, Pandas & Numpy</p>
 
             <h1 className='font-bold my-3'>DevOps</h1>
             <p>Kubernetes, Docker, Nginx, WSGI/ASGI, Gunicorn, PM2, various clis</p>
             
             <h1 className='font-bold my-3'>About me</h1>
-            <p>Full Stack Engineer. I like financial topics, playing the guitar, speaking foreign languages, doing sports and reading books</p>
+            <p>As a Full Stack Engineer, I write programs and integrations. As a human being, I enjoy financial and economic overviews, doing sports, and reading books.</p>
           </div>
           
 
@@ -113,22 +113,4 @@ export default About
 
 
 
-// export async function getStaticProps() {
-//   const aboutData = getNewPostBySlug('about', [
-//     'lang',
-//     'content',
-//     'preface',
-//     'welcomeMsg'
-//   ])
-//   const content = await markdownToHtml(aboutData.content || '')
-
-//   return {
-//     props: {
-//       lang: aboutData.lang,
-//       preface: aboutData.preface,
-//       welcomeMsg: aboutData.welcomeMsg,
-//       content,
-//     },
-//   }
-// }
 

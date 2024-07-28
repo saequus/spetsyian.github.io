@@ -50,9 +50,9 @@ const MainPageBlock = () => {
           <div className='p-8 mx-2 my-4 flex-auto rounded-sm chocolate-bg orange uppercase shadow-2xl
             lg:w-2/12 lg:m-7
           '>
-            <h1 className='text-3xl p-1 font-bold'>CV</h1>
-            <p className='mb-3 text-xllg:font-extralight'>See the CV / Resume</p>
-            <Button href='/assets/Slava_Spetsyian_CV.pdf' text='See'></Button>
+            <h1 className='text-3xl p-1 font-bold'>Projects</h1>
+            <p className='mb-3 text-xllg:font-extralight'>Check out the projects I have worked on</p>
+            <Button href='/projects' text='Projects'></Button>
           </div>
 
         </div>
