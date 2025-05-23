@@ -42,7 +42,7 @@ const Footer = ({lang}: Props) => {
               facebook_username='slava.spetsyian'
               telegram_username='saequus'
               github_username='saequus'
-              twitter_username='slava_spetsyian'
+              twitter_username='spetsyian'
             />
           </div>
          

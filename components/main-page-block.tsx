@@ -64,14 +64,14 @@ const MainPageBlock = () => {
           '>
             <h1 className='text-3xl p-1 font-bold'>Blog</h1>
             <h3 className='mb-3 text-xl lg:font-extralight'>Smart productive [overviews]</h3>
-            <Button href='https://t.me/smart_productive' text='Visit'></Button>
+            <Button href='https://t.me/spetsyian' text='Visit'></Button>
           </div>
 
           <div className='p-8 mx-2 my-4 flex-auto rounded-sm chocolate-bg orange uppercase shadow-2xl
             lg:w-2/12 lg:m-7
           '>
             <h1 className='text-3xl p-1 font-bold'>Shared</h1>
-            <h3 className='mb-3 text-xl lg:font-extralight'>Staff you may find funny or usefull</h3>
+            <h3 className='mb-3 text-xl lg:font-extralight'>Stuff you may find funny or usefull</h3>
             <Button href='https://drive.google.com/drive/u/0/folders/1AzDEjiloqka5BDha16IxJaBQVBU2CYej' text='Check'></Button>
           </div>
 
