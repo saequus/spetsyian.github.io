@@ -1,10 +1,10 @@
 import SiteShell from '../../components/SiteShell'
 
-export default function ProjectsPage() {
+export default function WorkPage() {
   return (
-    <SiteShell title="Projects | Slava Saequus">
+    <SiteShell title="Work | Slava Saequus">
       <div className="liquid-glass liquid-glass--tint glass-block placeholder-page">
-        <h1>Projects</h1>
+        <h1>Work</h1>
         <p>Coming soon.</p>
       </div>
     </SiteShell>

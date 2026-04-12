@@ -1,11 +1,10 @@
-module.exports = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'export',
+  trailingSlash: true,
   images: {
-    formats: ['image/avif', 'image/webp']
+    unoptimized: true,
   },
-  rewrites: async () => [
-    {
-      source: "/apps/game-of-life",
-      destination: "/assets/apps/game-of-life.html",
-    }
-  ],
 }
+
+module.exports = nextConfig
