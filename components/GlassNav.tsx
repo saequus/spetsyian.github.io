@@ -2,7 +2,8 @@ import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Calendar, Copy, Github, Home, Mail } from 'lucide-react'
 
-const EMAIL = 'slava@spetsyian.com'
+const EMAIL_PRIMARY = 'slava@spetsyian.com'
+const EMAIL_ALT = 'slavaspetsyian@gmail.com'
 
 export default function GlassNav() {
   const [open, setOpen] = useState(false)
@@ -12,9 +13,9 @@ export default function GlassNav() {
 
   const showPopover = open || hovering
 
-  const copyEmail = useCallback(async () => {
+  const copyEmail = useCallback(async (address: string) => {
     try {
-      await navigator.clipboard.writeText(EMAIL)
+      await navigator.clipboard.writeText(address)
       setCopied(true)
       window.setTimeout(() => setCopied(false), 2000)
     } catch {
@@ -55,6 +56,16 @@ export default function GlassNav() {
         className="liquid-glass liquid-glass--tint glass-nav"
         aria-label="Primary"
       >
+        <div className="glass-nav-atmosphere" aria-hidden>
+          <span className="glass-nav-cloud glass-nav-cloud--a" />
+          <span className="glass-nav-cloud glass-nav-cloud--b" />
+          <span className="glass-nav-cloud glass-nav-cloud--c" />
+          <span className="glass-nav-cloud glass-nav-cloud--d" />
+          <span className="glass-nav-cloud glass-nav-cloud--e" />
+          <span className="glass-nav-cloud glass-nav-cloud--f" />
+          <span className="glass-nav-radiance" />
+          <span className="glass-nav-mist" />
+        </div>
         <Link href="/" className="nav-icon-link" aria-label="Home">
           <Home className="glass-icon" size={20} strokeWidth={1.75} />
         </Link>
@@ -97,7 +108,7 @@ export default function GlassNav() {
         >
           <button
             type="button"
-            className="nav-icon-btn"
+            className="nav-icon-btn nav-icon-btn--email"
             aria-expanded={showPopover}
             aria-haspopup="dialog"
             aria-label="Email"
@@ -106,26 +117,47 @@ export default function GlassNav() {
               setOpen((v) => !v)
             }}
           >
+            <span className="nav-email-orbit-wrap" aria-hidden>
+              <span className="orbit-spinner">
+                <span className="orbit" />
+                <span className="orbit" />
+                <span className="orbit" />
+              </span>
+            </span>
             <Mail className="glass-icon" size={20} strokeWidth={1.75} />
           </button>
           {showPopover ? (
             <div
               className="email-popover"
               role="dialog"
-              aria-label="Email address"
+              aria-label="Email addresses"
               onMouseEnter={() => setHovering(true)}
               onMouseLeave={() => setHovering(false)}
             >
               <div className="email-popover-row">
-                <code>{EMAIL}</code>
+                <code>{EMAIL_PRIMARY}</code>
                 <button
                   type="button"
                   className="copy-btn"
                   onClick={(e) => {
                     e.stopPropagation()
-                    void copyEmail()
+                    void copyEmail(EMAIL_PRIMARY)
                   }}
-                  aria-label="Copy email"
+                  aria-label={`Copy ${EMAIL_PRIMARY}`}
+                >
+                  <Copy className="glass-icon" size={18} strokeWidth={1.75} />
+                </button>
+              </div>
+              <div className="email-popover-row">
+                <code>{EMAIL_ALT}</code>
+                <button
+                  type="button"
+                  className="copy-btn"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    void copyEmail(EMAIL_ALT)
+                  }}
+                  aria-label={`Copy ${EMAIL_ALT}`}
                 >
                   <Copy className="glass-icon" size={18} strokeWidth={1.75} />
                 </button>

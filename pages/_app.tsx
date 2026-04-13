@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app'
 import { Manrope, Syne } from 'next/font/google'
 import '../styles/globals.css'
+import '../styles/book-call.css'
 
 const manrope = Manrope({
   subsets: ['latin'],
