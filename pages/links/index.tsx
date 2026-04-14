@@ -7,7 +7,7 @@ export default function LinksPage() {
       description="Resources that have shaped my worldview and aspirations."
       contentClassName="content-wide"
     >
-      <header className="liquid-glass liquid-glass--tint glass-block links-page-intro">
+      <header className="links-page-intro">
         <h1>Favorite Links</h1>
         <p className="meta">Last updated: May 2026</p>
         <p>
