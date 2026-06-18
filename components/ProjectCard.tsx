@@ -40,7 +40,6 @@ export default function ProjectCard({ project }: Props) {
             height={720}
             loading="lazy"
             decoding="async"
-            fetchPriority="low"
           />
         </picture>
         <div className="project-card-overlay" aria-hidden />

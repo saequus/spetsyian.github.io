@@ -106,14 +106,14 @@ export const PROJECTS: ProjectEntry[] = [
   {
     name: 'SalesAmplifier',
     href: SERPENTARIA.ventures[0].href,
-    image: '/assets/img/ogImage',
+    image: '/assets/img/projects/salesamplifier-og',
     description:
       'Allegro seller analytics — upload XLSX reports, track sales across accounts, and visualize Ads performance in one workspace.',
   },
   {
     name: 'Serpentaria Capital',
     href: SERPENTARIA.href,
-    image: '/assets/img/ogImage',
+    image: '/assets/img/projects/serpentaria-og',
     description: 'Engineering and product work at the intersection of markets and technology.',
   },
   {
@@ -131,7 +131,7 @@ export const PROJECTS: ProjectEntry[] = [
   {
     name: 'Lift Vertical',
     href: 'https://liftvertical.com/',
-    image: '/assets/img/projects/lift-vertical-project-img',
+    image: '/assets/img/projects/lift-vertical-og',
     description: 'AI technologies for social welfare and public-sector impact.',
   },
   {
