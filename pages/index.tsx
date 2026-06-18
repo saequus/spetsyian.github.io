@@ -1,27 +1,46 @@
 import SiteShell from '../components/SiteShell'
+import { PROFILE, SERPENTARIA } from '../lib/profile'
+
+const salesAmplifier = SERPENTARIA.ventures[0]
 
 export default function Home() {
   return (
     <SiteShell title="Slava Saequus">
       <div className="home-page">
         <section>
-          <h1>Slava Saequus</h1>
+          <h1>{PROFILE.name}</h1>
           <p>
-            Currently building stuff at{' '}
+            {PROFILE.title} working at{' '}
+            <a href={SERPENTARIA.href} target="_blank" rel="noopener noreferrer">
+              Serpentaria Capital
+            </a>
+            , building{' '}
             <a
-              href="https://www.serpentaria.eu/"
+              href={salesAmplifier.href}
               target="_blank"
               rel="noopener noreferrer"
             >
-              Serpentaria Capital
+              {salesAmplifier.name}
             </a>
-            . I enjoy engineering, financial markets, and somatic work.
+            . Previously at{' '}
+            <a
+              href="https://il.linkedin.com/company/razor-technologies-inc"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Razor Labs
+            </a>
+            . {PROFILE.tagline} I enjoy {PROFILE.interests.join(', ')}.
           </p>
         </section>
 
         <section>
           <h2>Now</h2>
-          <p>Tinkering here and there in Warsaw, Poland.</p>
+          <p>
+            Leading platform engineering in {PROFILE.location}. See{' '}
+            <a href="/work/">work</a> and <a href="/projects/">projects</a> for
+            more detail.
+          </p>
         </section>
 
         <section>
@@ -39,16 +58,17 @@ export default function Home() {
           </p>
           <p>
             Don&apos;t hesitate to{' '}
-            <a
-              href="https://x.com/slava_saequus"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href={PROFILE.x} target="_blank" rel="noopener noreferrer">
               shoot me a DM
+            </a>{' '}
+            or connect on{' '}
+            <a href={PROFILE.linkedIn} target="_blank" rel="noopener noreferrer">
+              LinkedIn
             </a>
             .
           </p>
         </section>
+        <div className="home-page-spacer" aria-hidden />
       </div>
     </SiteShell>
   )

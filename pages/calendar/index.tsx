@@ -1,5 +1,17 @@
+import dynamic from 'next/dynamic'
 import SiteShell from '../../components/SiteShell'
-import BookCallBooking from '../../components/book-call/BookCallBooking'
+
+const BookCallBooking = dynamic(
+  () => import('../../components/book-call/BookCallBooking'),
+  {
+    loading: () => (
+      <p className="book-call-loading" role="status">
+        Loading calendar…
+      </p>
+    ),
+    ssr: false,
+  }
+)
 
 export default function CalendarPage() {
   return (

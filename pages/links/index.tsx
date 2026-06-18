@@ -1,4 +1,5 @@
 import SiteShell from '../../components/SiteShell'
+import { PROFILE } from '../../lib/profile'
 
 export default function LinksPage() {
   return (
@@ -9,7 +10,7 @@ export default function LinksPage() {
     >
       <header className="links-page-intro">
         <h1>Favorite Links</h1>
-        <p className="meta">Last updated: May 2026</p>
+        <p className="meta">Last updated: June 2026</p>
         <p>
           Here&apos;s a collection of resources that have shaped my worldview and
           aspirations—if they resonate with you, we&apos;ll likely get along!
@@ -61,6 +62,29 @@ export default function LinksPage() {
               rel="noopener noreferrer"
             >
               The Almanack of Naval Ravikant: A Guide to Wealth and Happiness
+            </a>
+          </li>
+        </ul>
+      </article>
+
+      <article className="liquid-glass liquid-glass--tint glass-block thinker-block">
+        <h2>
+          <span aria-hidden>{'\u{1F4BC}'}</span> Professional
+        </h2>
+        <ul className="check-list">
+          <li>
+            <a href={PROFILE.linkedIn} target="_blank" rel="noopener noreferrer">
+              LinkedIn
+            </a>
+          </li>
+          <li>
+            <a href={PROFILE.github} target="_blank" rel="noopener noreferrer">
+              GitHub
+            </a>
+          </li>
+          <li>
+            <a href={PROFILE.x} target="_blank" rel="noopener noreferrer">
+              X / Twitter
             </a>
           </li>
         </ul>

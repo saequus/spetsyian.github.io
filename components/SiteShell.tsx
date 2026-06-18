@@ -1,8 +1,12 @@
+import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import type { ReactNode } from 'react'
 import GlassFooter from './GlassFooter'
 import GlassNav from './GlassNav'
-import VideoBackground from './VideoBackground'
+
+const VideoBackground = dynamic(() => import('./VideoBackground'), {
+  ssr: false,
+})
 
 type Props = {
   children: ReactNode
@@ -12,7 +16,7 @@ type Props = {
 }
 
 const defaultDesc =
-  'Slava Saequus — engineering, markets, and somatic work. Warsaw, Poland.'
+  'Slava Saequus — Senior Software Engineer & Team Lead. Working at Serpentaria Capital, building SalesAmplifier. Warsaw, Poland.'
 
 export default function SiteShell({
   children,
@@ -25,7 +29,10 @@ export default function SiteShell({
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
       </Head>
       <div className="page-root">
         <VideoBackground />

@@ -1,4 +1,4 @@
-import { Github, Instagram } from 'lucide-react'
+import { Github, Instagram, Linkedin } from 'lucide-react'
 
 const EMAIL = 'slava@spetsyian.com'
 
@@ -10,6 +10,15 @@ export default function GlassFooter() {
         aria-label="Social and contact"
       >
         <div className="glass-footer-start">
+          <a
+            href="https://www.linkedin.com/in/spetsyian/"
+            className="nav-icon-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+          >
+            <Linkedin className="glass-icon" size={20} strokeWidth={1.75} />
+          </a>
           <a
             href="https://www.instagram.com/saequus/"
             className="nav-icon-link"

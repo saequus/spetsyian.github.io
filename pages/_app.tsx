@@ -6,11 +6,17 @@ import '../styles/book-call.css'
 const manrope = Manrope({
   subsets: ['latin'],
   variable: '--font-body',
+  display: 'swap',
+  adjustFontFallback: true,
+  preload: true,
 })
 
 const syne = Syne({
   subsets: ['latin'],
   variable: '--font-display',
+  display: 'swap',
+  adjustFontFallback: true,
+  preload: false,
 })
 
 export default function MyApp({ Component, pageProps }: AppProps) {
