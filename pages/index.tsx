@@ -1,5 +1,5 @@
 import SiteShell from '../components/SiteShell'
-import { PROFILE, SERPENTARIA } from '../lib/profile'
+import { IDENTITY, PROFILE, SERPENTARIA } from '../lib/profile'
 
 const salesAmplifier = SERPENTARIA.ventures[0]
 
@@ -41,6 +41,15 @@ export default function Home() {
             <a href="/work/">work</a> and <a href="/projects/">projects</a> for
             more detail.
           </p>
+        </section>
+
+        <section>
+          <h2>Identity</h2>
+          {IDENTITY.map((item) => (
+            <p key={item.label}>
+              <strong>{item.label}:</strong> {item.value}
+            </p>
+          ))}
         </section>
 
         <section>

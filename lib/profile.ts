@@ -18,6 +18,17 @@ export const PROFILE = {
   },
 } as const
 
+export const IDENTITY = [
+  {
+    label: 'Enneagram',
+    value: 'Type 7 — THE ENTHUSIAST',
+  },
+  {
+    label: 'Human Design',
+    value: 'Generator (Profile 3/5)',
+  },
+] as const
+
 export type VentureEntry = {
   name: string
   href: string
