@@ -10,7 +10,7 @@ export default function LinksPage() {
     >
       <header className="links-page-intro">
         <h1>Favorite Links</h1>
-        <p className="meta">Last updated: June 2026</p>
+        <p className="meta">Last updated: July 2026</p>
         <p>
           Here&apos;s a collection of resources that have shaped my worldview and
           aspirations—if they resonate with you, we&apos;ll likely get along!
@@ -65,6 +65,29 @@ export default function LinksPage() {
             </a>
           </li>
         </ul>
+      </article>
+
+      <article className="liquid-glass liquid-glass--tint glass-block thinker-block">
+        <h2>
+          <span aria-hidden>{'\u{1F9E0}'}</span> Meta-knowledge and meta-thinking
+        </h2>
+        <h3>
+          <a
+            href="https://www.lesswrong.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LessWrong
+          </a>
+        </h3>
+        <p>
+          A cornerstone resource for intellectuals seeking to improve their
+          reasoning. LessWrong hosts the Sequences and essays on rationality,
+          epistemology, cognitive biases, and decision theory that train clearer
+          thinking, more accurate belief updating, and intellectual honesty.
+          Essential for anyone serious about truth-seeking and modeling the
+          world rigorously.
+        </p>
       </article>
 
       <article className="liquid-glass liquid-glass--tint glass-block thinker-block">
