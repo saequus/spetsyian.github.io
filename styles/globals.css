@@ -21,30 +21,30 @@ html {
 
 /* Page shell & video vignette */
 :root {
-  --shell-bg: #010103;
-  --shell-bg-rgb: 1, 1, 3;
-  /* Mild yellow / warm gold accents (glass tint + links) */
-  --tint-gold-rgb: 201, 165, 72;
-  --tint-gold-soft-rgb: 232, 214, 160;
+  --shell-bg: #0a0a0c;
+  --shell-bg-rgb: 10, 10, 12;
+  /* Mild orange + gentle black (glass tint + links) */
+  --tint-orange-rgb: 255, 109, 41;
+  --tint-orange-soft-rgb: 255, 143, 90;
   --text-cream: rgba(250, 245, 228, 0.96);
   --text-cream-soft: rgba(245, 236, 210, 0.92);
   --text-cream-muted: rgba(228, 215, 175, 0.88);
-  --link: #c9b06d;
-  --link-hover: #e8dcb0;
-  --link-underline: rgba(201, 176, 109, 0.45);
-  --link-underline-hover: rgba(232, 220, 176, 0.65);
+  --link: #ff8a55;
+  --link-hover: #ffb38a;
+  --link-underline: rgba(255, 138, 85, 0.45);
+  --link-underline-hover: rgba(255, 179, 138, 0.65);
   /* Mobile: full width chrome; md+: centered rail */
   --layout-rail: 100%;
-  --content-pad-x: max(1rem, env(safe-area-inset-left, 0px));
-  --content-pad-x-right: max(1rem, env(safe-area-inset-right, 0px));
+  --content-pad-x: max(1.25rem, env(safe-area-inset-left, 0px));
+  --content-pad-x-right: max(1.25rem, env(safe-area-inset-right, 0px));
   --touch-min: 44px;
 }
 
 @media (min-width: 768px) {
   :root {
-    --layout-rail: min(60vw, calc(100vw - 5rem));
-    --content-pad-x: 2.5rem;
-    --content-pad-x-right: 2.5rem;
+    --layout-rail: min(58vw, calc(100vw - 6rem));
+    --content-pad-x: 3rem;
+    --content-pad-x-right: 3rem;
   }
 }
 
@@ -89,7 +89,7 @@ a:hover {
   background:
     radial-gradient(
       80% 60% at 50% 40%,
-      rgba(var(--tint-gold-rgb), 0.08) 0%,
+      rgba(var(--tint-orange-rgb), 0.07) 0%,
       transparent 55%
     ),
     var(--shell-bg);
@@ -157,13 +157,13 @@ a:hover {
   z-index: 1;
   pointer-events: none;
   background-blend-mode: normal;
-  /* Same gold wash as .liquid-glass--tint, then vignette (first layer paints on top) */
+  /* Orange-tinted glass vignette */
   background:
     linear-gradient(
       160deg,
-      rgba(var(--tint-gold-rgb), 0.12) 0%,
-      rgba(var(--tint-gold-rgb), 0.06) 48%,
-      rgba(255, 255, 255, 0.03) 100%
+      rgba(var(--tint-orange-rgb), 0.10) 0%,
+      rgba(var(--tint-orange-rgb), 0.05) 48%,
+      rgba(255, 255, 255, 0.02) 100%
     ),
     linear-gradient(
       90deg,
@@ -199,8 +199,8 @@ a:hover {
     background:
       linear-gradient(
         165deg,
-        rgba(var(--tint-gold-rgb), 0.11) 0%,
-        rgba(var(--tint-gold-rgb), 0.04) 40%,
+        rgba(var(--tint-orange-rgb), 0.09) 0%,
+        rgba(var(--tint-orange-rgb), 0.04) 40%,
         transparent 65%
       ),
       linear-gradient(
@@ -224,17 +224,17 @@ a:hover {
   position: relative;
   z-index: 2;
   min-height: 100vh;
-  /* Floating home/menu only — less top offset than old full bar */
-  padding-top: max(4.25rem, calc(2.5rem + env(safe-area-inset-top, 0px)));
-  padding-bottom: max(5rem, calc(3.5rem + env(safe-area-inset-bottom, 0px)));
+  /* Floating home/menu only — generous premium spacing */
+  padding-top: max(5rem, calc(3.5rem + env(safe-area-inset-top, 0px)));
+  padding-bottom: max(6rem, calc(4rem + env(safe-area-inset-bottom, 0px)));
   padding-left: var(--content-pad-x);
   padding-right: var(--content-pad-x-right);
 }
 
 @media (min-width: 768px) {
   .content-layer {
-    padding-top: 7rem;
-    padding-bottom: 6rem;
+    padding-top: 8.5rem;
+    padding-bottom: 7.5rem;
   }
 }
 
@@ -256,50 +256,54 @@ a:hover {
 
 /* Home: text only (no cards), type ~10% larger than other content pages */
 .home-page section + section {
-  margin-top: 1.75rem;
+  margin-top: 3.25rem;
 }
 
 .home-page-spacer {
-  height: 250px;
+  height: 320px;
   pointer-events: none;
 }
 
 @media (max-width: 767px) {
   .home-page > section:first-child {
-    margin-top: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .home-page section + section {
+    margin-top: 2.5rem;
   }
 
   .content-layer.content-wide,
   .content-layer.content-narrow {
-    padding-bottom: max(6rem, calc(4.5rem + env(safe-area-inset-bottom, 0px)));
+    padding-bottom: max(7rem, calc(5rem + env(safe-area-inset-bottom, 0px)));
   }
 }
 
 .home-page h1 {
   font-family: var(--font-display), var(--font-body), system-ui, sans-serif;
-  font-size: clamp(1.75rem, 5.5vw, 2.585rem);
+  font-size: clamp(1.85rem, 5.5vw, 2.7rem);
   font-weight: 600;
   letter-spacing: -0.02em;
-  margin: 0 0 0.85rem;
-  line-height: 1.15;
+  margin: 0 0 1rem;
+  line-height: 1.12;
   text-wrap: balance;
 }
 
 .home-page h2 {
   font-family: var(--font-display), var(--font-body), system-ui, sans-serif;
-  font-size: 1.155rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  margin: 0 0 0.65rem;
+  margin: 0 0 0.9rem;
   color: var(--text-cream-muted);
 }
 
 .home-page p {
-  margin: 0 0 0.85rem;
-  line-height: 1.65;
-  font-size: clamp(1rem, 2.8vw, 1.122rem);
-  color: rgba(242, 232, 210, 0.9);
+  margin: 0 0 1rem;
+  line-height: 1.72;
+  font-size: clamp(1.02rem, 2.8vw, 1.14rem);
+  color: rgba(242, 232, 210, 0.92);
   overflow-wrap: break-word;
 }
 
@@ -307,22 +311,28 @@ a:hover {
   margin-bottom: 0;
 }
 
-/* ─── Frosted “liquid glass” ───────────────────────────────────────────────── */
+/* ─── Frosted “liquid glass” (mild orange + gentle black) ─────────────────── */
 .liquid-glass {
-  background: rgba(255, 255, 255, 0.01);
+  background: rgba(255, 255, 255, 0.015);
   background-blend-mode: luminosity;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: none;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.14),
+    0 8px 32px rgba(0, 0, 0, 0.35);
   position: relative;
   overflow: hidden;
+  border-radius: inherit;
 }
 
 @media (max-width: 767px) {
   .liquid-glass {
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.12),
+      0 6px 24px rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -338,15 +348,15 @@ a:hover {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  padding: 1.4px;
+  padding: 1.5px;
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.18) 18%,
+    rgba(255, 255, 255, 0) 38%,
+    rgba(255, 255, 255, 0) 58%,
+    rgba(255, 255, 255, 0.18) 78%,
+    rgba(255, 255, 255, 0.52) 100%
   );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -361,8 +371,8 @@ a:hover {
 }
 
 .liquid-glass svg.glass-icon {
-  color: #f2e8c9;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+  color: #f5e8c8;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
   opacity: 0.98;
 }
 
@@ -380,26 +390,29 @@ a:hover {
 }
 
 .liquid-glass.liquid-glass--tint {
+  /* Premium liquid glass with warm orange bottom emission */
   background: linear-gradient(
-    160deg,
-    rgba(var(--tint-gold-rgb), 0.12) 0%,
-    rgba(var(--tint-gold-rgb), 0.06) 48%,
-    rgba(255, 255, 255, 0.03) 100%
+    165deg,
+    rgba(var(--tint-orange-rgb), 0.09) 0%,
+    rgba(var(--tint-orange-rgb), 0.045) 42%,
+    rgba(255, 255, 255, 0.02) 100%
   );
   background-blend-mode: normal;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.16),
+    0 10px 40px rgba(0, 0, 0, 0.38);
 }
 
 .liquid-glass.liquid-glass--tint::before {
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.4) 0%,
-    rgba(var(--tint-gold-soft-rgb), 0.2) 22%,
-    rgba(255, 255, 255, 0.08) 42%,
-    rgba(255, 255, 255, 0) 50%,
-    rgba(255, 255, 255, 0.08) 58%,
-    rgba(var(--tint-gold-soft-rgb), 0.16) 78%,
-    rgba(255, 255, 255, 0.36) 100%
+    rgba(255, 255, 255, 0.52) 0%,
+    rgba(var(--tint-orange-soft-rgb), 0.18) 20%,
+    rgba(255, 255, 255, 0.06) 38%,
+    rgba(255, 255, 255, 0) 52%,
+    rgba(255, 255, 255, 0.06) 60%,
+    rgba(var(--tint-orange-soft-rgb), 0.14) 76%,
+    rgba(255, 255, 255, 0.42) 100%
   );
 }
 
@@ -465,15 +478,15 @@ a:hover {
   align-items: center;
   justify-content: center;
   margin: 0;
-  padding: 0.35rem;
-  min-width: 2.75rem;
-  min-height: 2.75rem;
+  padding: 0.4rem;
+  min-width: 2.9rem;
+  min-height: 2.9rem;
   width: auto;
   height: auto;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  border-radius: 0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  border-radius: 9999px;
   overflow: visible;
   -webkit-tap-highlight-color: transparent;
   text-decoration: none;
@@ -481,16 +494,22 @@ a:hover {
   color: var(--text-cream-soft);
   appearance: none;
   -webkit-appearance: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .glass-nav-fab:hover {
   color: rgba(255, 255, 255, 0.98);
+  background: rgba(var(--tint-orange-rgb), 0.12);
+  border-color: rgba(var(--tint-orange-rgb), 0.3);
+  box-shadow: 0 0 0 1px rgba(var(--tint-orange-rgb), 0.25), 0 6px 20px rgba(0, 0, 0, 0.35);
 }
 
 .glass-nav-fab:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.45);
+  outline: 2px solid rgba(var(--tint-orange-rgb), 0.5);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: 9999px;
 }
 
 .glass-nav-fab--home {
@@ -629,12 +648,12 @@ a:hover {
     max(1rem, env(safe-area-inset-bottom, 0px)) max(1rem, env(safe-area-inset-left, 0px));
   list-style: none;
   border-radius: 0;
-  background: rgba(10, 8, 6, 0.94);
+  background: rgba(12, 12, 14, 0.96);
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: none;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   max-height: none;
   overflow-y: auto;
   opacity: 0;
@@ -694,7 +713,7 @@ a:hover {
 
 .glass-nav-drawer-link:hover,
 .glass-nav-drawer-link:focus-visible {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(var(--tint-orange-rgb), 0.13);
   color: #faf6e8;
 }
 
@@ -714,7 +733,7 @@ a:hover {
 
 .glass-nav-drawer-rowlink:hover,
 .glass-nav-drawer-rowlink:focus-visible {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(var(--tint-orange-rgb), 0.13);
   color: #faf6e8;
 }
 
@@ -761,7 +780,7 @@ a:hover {
 .glass-nav-drawer-copy-hint {
   margin: 0.35rem 1rem 0;
   font-size: 0.75rem;
-  color: rgba(var(--tint-gold-soft-rgb), 0.85);
+  color: rgba(var(--tint-orange-soft-rgb), 0.92);
 }
 
 @media (max-width: 767px) {
@@ -797,7 +816,7 @@ a:hover {
 }
 
 .glass-nav a.nav-text:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(var(--tint-orange-rgb), 0.12);
   color: #faf6e8;
 }
 
@@ -827,7 +846,7 @@ a:hover {
 }
 
 .glass-nav .nav-icon-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--tint-orange-rgb), 0.14);
 }
 
 .glass-nav .nav-icon-link,
@@ -840,12 +859,13 @@ a:hover {
   margin: 0 4px;
   border-radius: 9999px;
   text-decoration: none;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, box-shadow 0.2s ease;
 }
 
 .glass-nav .nav-icon-link:hover,
 .glass-footer .nav-icon-link:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--tint-orange-rgb), 0.14);
+  box-shadow: 0 0 0 1px rgba(var(--tint-orange-rgb), 0.25);
 }
 
 /* ─── Glass footer ─────────────────────────────────────────────────────────── */
@@ -922,7 +942,7 @@ a:hover {
 }
 
 .glass-footer-email:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(var(--tint-orange-rgb), 0.12);
   color: #fff;
 }
 
@@ -956,10 +976,10 @@ a:hover {
   max-width: calc(100vw - 1.25rem);
   padding: 0.75rem 0.85rem;
   border-radius: 0.75rem;
-  background: rgba(22, 18, 10, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(14, 14, 16, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
   pointer-events: auto;
   gap: 0.5rem;
@@ -995,32 +1015,33 @@ a:hover {
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(255, 255, 255, 0.06);
   cursor: pointer;
-  color: #f2e8c9;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  color: #f5e8c8;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .copy-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(var(--tint-orange-rgb), 0.16);
+  border-color: rgba(var(--tint-orange-rgb), 0.35);
+  box-shadow: 0 0 0 1px rgba(var(--tint-orange-rgb), 0.2);
 }
 
 .copy-toast {
   font-size: 0.75rem;
-  color: #d4dfa8;
+  color: rgba(var(--tint-orange-soft-rgb), 0.95);
 }
 
-/* ─── Content blocks ───────────────────────────────────────────────────────── */
+/* ─── Content blocks (premium generous spacing) ───────────────────────────── */
 .glass-block {
-  border-radius: 1.25rem;
-  padding: 1.35rem 1.5rem;
-  margin-bottom: 1.25rem;
+  border-radius: 1.75rem;
+  padding: 1.75rem 1.9rem;
+  margin-bottom: 1.75rem;
 }
 
 @media (max-width: 767px) {
   .glass-block {
-    padding: 1.1rem 1.1rem;
-    border-radius: 1rem;
-    margin-bottom: 1rem;
+    padding: 1.35rem 1.35rem;
+    border-radius: 1.35rem;
+    margin-bottom: 1.35rem;
   }
 }
 
@@ -1039,7 +1060,7 @@ a:hover {
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  margin: 1.75rem 0 0.65rem;
+  margin: 2.25rem 0 0.8rem;
   color: var(--text-cream-muted);
 }
 
@@ -1048,10 +1069,10 @@ a:hover {
 }
 
 .glass-block p {
-  margin: 0 0 0.85rem;
-  line-height: 1.65;
-  font-size: 1.02rem;
-  color: rgba(242, 232, 210, 0.9);
+  margin: 0 0 1rem;
+  line-height: 1.72;
+  font-size: 1.03rem;
+  color: rgba(242, 232, 210, 0.92);
 }
 
 .glass-block p:last-child {
@@ -1059,47 +1080,47 @@ a:hover {
 }
 
 .links-page-intro {
-  margin-bottom: 1.75rem;
+  margin-bottom: 2.5rem;
 }
 
 .links-page-intro h1 {
   font-family: var(--font-display), var(--font-body), system-ui, sans-serif;
-  font-size: clamp(1.5rem, 5vw, 2.1rem);
+  font-size: clamp(1.65rem, 5vw, 2.2rem);
   font-weight: 600;
   letter-spacing: -0.02em;
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.6rem;
   line-height: 1.15;
   text-wrap: balance;
 }
 
 .links-page-intro .meta {
   font-size: 0.875rem;
-  color: rgba(var(--tint-gold-soft-rgb), 0.78);
-  margin: 0 0 1rem;
+  color: rgba(var(--tint-orange-soft-rgb), 0.82);
+  margin: 0 0 1.25rem;
 }
 
 .links-page-intro p:not(.meta) {
   margin: 0;
-  line-height: 1.65;
-  font-size: 1.02rem;
-  color: rgba(242, 232, 210, 0.9);
+  line-height: 1.7;
+  font-size: 1.05rem;
+  color: rgba(242, 232, 210, 0.92);
 }
 
 .thinker-block h3 {
   font-family: var(--font-display), var(--font-body), system-ui, sans-serif;
-  font-size: 1.2rem;
-  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  margin: 0 0 0.65rem;
 }
 
 .thinker-block .check-list {
-  margin: 0.75rem 0 0;
-  padding-left: 1.1rem;
-  line-height: 1.7;
-  color: rgba(242, 232, 210, 0.88);
+  margin: 1rem 0 0;
+  padding-left: 1.25rem;
+  line-height: 1.75;
+  color: rgba(242, 232, 210, 0.9);
 }
 
 .thinker-block .check-list li {
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.45rem;
   overflow-wrap: anywhere;
 }
 
@@ -1116,7 +1137,7 @@ a:hover {
 
 .placeholder-page p {
   margin: 0;
-  color: rgba(var(--tint-gold-soft-rgb), 0.82);
+  color: rgba(var(--tint-orange-soft-rgb), 0.82);
 }
 
 /* ─── Work page ───────────────────────────────────────────────────────────── */
@@ -1159,7 +1180,7 @@ a:hover {
 .work-entry-meta {
   margin: 0;
   font-size: 0.875rem;
-  color: rgba(var(--tint-gold-soft-rgb), 0.78);
+  color: rgba(var(--tint-orange-soft-rgb), 0.78);
 }
 
 .work-entry-role {
@@ -1172,7 +1193,7 @@ a:hover {
 .work-entry-stack {
   margin: 0 0 0.65rem;
   font-size: 0.85rem;
-  color: rgba(var(--tint-gold-soft-rgb), 0.72);
+  color: rgba(var(--tint-orange-soft-rgb), 0.72);
 }
 
 .work-ventures {

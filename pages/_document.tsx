@@ -4,7 +4,7 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <meta name="theme-color" content="#010103" />
+        <meta name="theme-color" content="#0a0a0c" />
         <meta name="color-scheme" content="dark" />
         <link
           rel="preconnect"
