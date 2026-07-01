@@ -124,7 +124,7 @@ export const PROJECTS: ProjectEntry[] = [
   {
     name: 'Serpentaria Capital',
     href: SERPENTARIA.href,
-    image: '/assets/img/projects/serpentaria-og',
+    image: 'https://coreprojects.blob.core.windows.net/serpentariacapital/web/assets/img/other/ogimage-thumbnail-jellyfish-pl.jpg',
     description: 'Engineering and product work at the intersection of markets and technology.',
   },
   {

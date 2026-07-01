@@ -7,19 +7,42 @@ export default function Home() {
   return (
     <SiteShell title="Slava Saequus">
       <div className="home-page">
-        <section>
+        {/* Premium Hero Glass Plaque — inspired by aurō + SF refs */}
+        <section className="hero-glass">
+          <div className="hero-mark" aria-hidden>
+            <div className="hero-orb">
+              <div className="orb-glow" />
+              <span className="orb-initials">SS</span>
+            </div>
+          </div>
           <h1>{PROFILE.name}</h1>
-          <p>
-            {PROFILE.title} working at{' '}
+          <p className="hero-subtitle">
+            {PROFILE.title}
+          </p>
+          <p className="hero-meta">
+            Building projects at{' '}
             <a href={SERPENTARIA.href} target="_blank" rel="noopener noreferrer">
               Serpentaria Capital
             </a>
-            , building{' '}
-            <a
-              href={salesAmplifier.href}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            :{' '}
+            <a href={salesAmplifier.href} target="_blank" rel="noopener noreferrer">
+              SalesAmplifier
+            </a>
+            · {PROFILE.location}
+          </p>
+        </section>
+
+        <section className="glass-statement">
+          <p>
+            {PROFILE.tagline} I work across engineering, financial markets, and somatic practices.
+          </p>
+        </section>
+
+        <section>
+          <h2>Now</h2>
+          <p>
+            Leading platform engineering. Currently shaping{' '}
+            <a href={salesAmplifier.href} target="_blank" rel="noopener noreferrer">
               {salesAmplifier.name}
             </a>
             . Previously at{' '}
@@ -30,20 +53,14 @@ export default function Home() {
             >
               Razor Labs
             </a>
-            . {PROFILE.tagline} I enjoy {PROFILE.interests.join(', ')}.
+            .
           </p>
-        </section>
-
-        <section>
-          <h2>Now</h2>
           <p>
-            Leading platform engineering in {PROFILE.location}. See{' '}
-            <a href="/work/">work</a> and <a href="/projects/">projects</a> for
-            more detail.
+            See <a href="/work/">full work</a> and <a href="/projects/">projects</a>.
           </p>
         </section>
 
-        <section>
+        <section className="identity">
           <h2>Identity</h2>
           {IDENTITY.map((item) => (
             <p key={item.label}>
@@ -55,28 +72,19 @@ export default function Home() {
         <section>
           <h2>Friendcatcher</h2>
           <p>
-            Check out my <a href="/links/">favorite links</a> and{' '}
-            <a
-              href="https://t.me/spetsyian#"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            A few things that matter to me live in <a href="/links/">favorite links</a> and on my{' '}
+            <a href="https://t.me/spetsyian#" target="_blank" rel="noopener noreferrer">
               blog
-            </a>{' '}
-            — if any of these resonate, we&apos;d get along.
-          </p>
-          <p>
-            Don&apos;t hesitate to{' '}
-            <a href={PROFILE.x} target="_blank" rel="noopener noreferrer">
-              shoot me a DM
-            </a>{' '}
-            or connect on{' '}
-            <a href={PROFILE.linkedIn} target="_blank" rel="noopener noreferrer">
-              LinkedIn
             </a>
-            .
+            . If any of it resonates, we’ll probably get along.
+          </p>
+          <p className="final-cta">
+            Reach me on{' '}
+            <a href={PROFILE.x} target="_blank" rel="noopener noreferrer">X</a>{' '}
+            or <a href={PROFILE.linkedIn} target="_blank" rel="noopener noreferrer">LinkedIn</a>.
           </p>
         </section>
+
         <div className="home-page-spacer" aria-hidden />
       </div>
     </SiteShell>

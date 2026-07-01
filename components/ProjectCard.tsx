@@ -14,9 +14,46 @@ function fallbackSrc(image: string): string {
 }
 
 export default function ProjectCard({ project }: Props) {
-  const stem = imageStem(project.image)
-  const src640 = `${stem}-640.webp`
-  const src1280 = `${stem}-1280.webp`
+  const isExternal = project.image.startsWith('http')
+
+  let imageContent
+
+  if (isExternal) {
+    imageContent = (
+      <img
+        src={project.image}
+        alt={`${project.name} preview`}
+        className="project-card-image"
+        width={1280}
+        height={720}
+        loading="lazy"
+        decoding="async"
+      />
+    )
+  } else {
+    const stem = imageStem(project.image)
+    const src640 = `${stem}-640.webp`
+    const src1280 = `${stem}-1280.webp`
+
+    imageContent = (
+      <picture>
+        <source
+          type="image/webp"
+          srcSet={`${src640} 640w, ${src1280} 1280w`}
+          sizes="(min-width: 768px) 50vw, 100vw"
+        />
+        <img
+          src={fallbackSrc(project.image)}
+          alt={`${project.name} preview`}
+          className="project-card-image"
+          width={1280}
+          height={720}
+          loading="lazy"
+          decoding="async"
+        />
+      </picture>
+    )
+  }
 
   return (
     <a
@@ -26,22 +63,7 @@ export default function ProjectCard({ project }: Props) {
       rel="noopener noreferrer"
     >
       <div className="project-card-image-wrap">
-        <picture>
-          <source
-            type="image/webp"
-            srcSet={`${src640} 640w, ${src1280} 1280w`}
-            sizes="(min-width: 768px) 50vw, 100vw"
-          />
-          <img
-            src={fallbackSrc(project.image)}
-            alt={`${project.name} preview`}
-            className="project-card-image"
-            width={1280}
-            height={720}
-            loading="lazy"
-            decoding="async"
-          />
-        </picture>
+        {imageContent}
         <div className="project-card-overlay" aria-hidden />
       </div>
       <div className="project-card-body">

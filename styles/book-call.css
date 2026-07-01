@@ -29,7 +29,7 @@
 }
 
 .book-call-page {
-  --book-border: rgba(var(--tint-orange-rgb), 0.26);
+  --book-border: rgba(var(--tint-orange-rgb), 0.234);
   --book-text: var(--text-cream);
   --book-text-muted: var(--text-cream-muted);
   --book-text-dim: rgba(var(--tint-orange-soft-rgb), 0.55);
@@ -136,7 +136,7 @@
 }
 
 .book-call-alert--info {
-  background: rgba(var(--tint-orange-rgb), 0.12);
+  background: rgba(var(--tint-orange-rgb), 0.108);
   border: 1px solid rgba(var(--tint-orange-rgb), 0.35);
   color: var(--text-cream-soft);
 }
@@ -175,7 +175,7 @@
 }
 
 .book-call-icon-btn:hover:not(:disabled) {
-  background: rgba(var(--tint-orange-rgb), 0.12);
+  background: rgba(var(--tint-orange-rgb), 0.108);
   color: var(--book-text);
 }
 
