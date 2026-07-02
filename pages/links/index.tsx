@@ -17,7 +17,8 @@ export default function LinksPage() {
         </p>
       </header>
 
-      <article className="liquid-glass liquid-glass--tint glass-block thinker-block">
+      <div className="card-grid">
+      <article className="content-card thinker-block">
         <h2>
           <span aria-hidden>{'\u{1F914}'}</span> Thinkers
         </h2>
@@ -67,7 +68,7 @@ export default function LinksPage() {
         </ul>
       </article>
 
-      <article className="liquid-glass liquid-glass--tint glass-block thinker-block">
+      <article className="content-card thinker-block">
         <h2>
           <span aria-hidden>{'\u{1F9E0}'}</span> Meta-knowledge and meta-thinking
         </h2>
@@ -90,7 +91,7 @@ export default function LinksPage() {
         </p>
       </article>
 
-      <article className="liquid-glass liquid-glass--tint glass-block thinker-block">
+      <article className="content-card thinker-block">
         <h2>
           <span aria-hidden>{'\u{1F4BC}'}</span> Professional
         </h2>
@@ -112,6 +113,7 @@ export default function LinksPage() {
           </li>
         </ul>
       </article>
+      </div>
     </SiteShell>
   )
 }

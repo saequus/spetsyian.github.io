@@ -58,7 +58,7 @@ export default function ProjectCard({ project }: Props) {
   return (
     <a
       href={project.href}
-      className="liquid-glass liquid-glass--tint project-card"
+      className="project-card"
       target="_blank"
       rel="noopener noreferrer"
     >

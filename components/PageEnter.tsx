@@ -11,6 +11,7 @@ const ENTER_SELECTOR = [
   ':scope > article',
   ':scope .home-page > section',
   ':scope .work-timeline > article',
+  ':scope .card-grid > *',
   ':scope .project-grid > *',
 ].join(', ')
 

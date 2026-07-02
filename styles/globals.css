@@ -33,18 +33,22 @@ html {
   --link-hover: #ffb38a;
   --link-underline: rgba(255, 138, 85, 0.45);
   --link-underline-hover: rgba(255, 179, 138, 0.65);
-  /* Mobile: full width chrome; md+: centered rail */
+  /* Mobile: full width chrome; md+: wide layout with 40px side inset */
   --layout-rail: 100%;
-  --content-pad-x: max(1.25rem, env(safe-area-inset-left, 0px));
-  --content-pad-x-right: max(1.25rem, env(safe-area-inset-right, 0px));
+  --layout-inset: max(1.25rem, env(safe-area-inset-left, 0px));
+  --layout-inset-right: max(1.25rem, env(safe-area-inset-right, 0px));
+  --content-pad-x: var(--layout-inset);
+  --content-pad-x-right: var(--layout-inset-right);
   --touch-min: 44px;
 }
 
 @media (min-width: 768px) {
   :root {
-    --layout-rail: min(58vw, calc(100vw - 6rem));
-    --content-pad-x: 3rem;
-    --content-pad-x-right: 3rem;
+    --layout-rail: 100%;
+    --layout-inset: max(40px, env(safe-area-inset-left, 0px));
+    --layout-inset-right: max(40px, env(safe-area-inset-right, 0px));
+    --content-pad-x: var(--layout-inset);
+    --content-pad-x-right: var(--layout-inset-right);
   }
 }
 
@@ -158,10 +162,10 @@ a:hover {
 
 .content-narrow,
 .content-wide {
-  width: var(--layout-rail);
+  width: 100%;
   max-width: 100%;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 /* Booking page: use full width inside content-layer padding (desktop + mobile) */
@@ -481,8 +485,8 @@ a:hover {
     left: 50%;
     right: auto;
     transform: translateX(-50%);
-    width: var(--layout-rail);
-    max-width: 100%;
+    width: 50vw;
+    max-width: calc(100vw - var(--layout-inset) - var(--layout-inset-right));
     pointer-events: none;
   }
 
@@ -988,8 +992,8 @@ a:hover {
     left: 50%;
     right: auto;
     transform: translateX(-50%);
-    width: var(--layout-rail);
-    max-width: 100%;
+    width: 50vw;
+    max-width: calc(100vw - var(--layout-inset) - var(--layout-inset-right));
     padding: 0;
   }
 }
@@ -1363,7 +1367,8 @@ a:hover {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* ─── Projects page ───────────────────────────────────────────────────────── */
+/* ─── Card grid (projects, favorite links) ─────────────────────────────────── */
+.card-grid,
 .project-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -1371,31 +1376,65 @@ a:hover {
 }
 
 @media (min-width: 640px) {
+  .card-grid,
   .project-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
   }
 }
 
+.content-card {
+  border-radius: 1.25rem;
+  background: rgba(16, 15, 14, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  padding: 1.35rem 1.5rem;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.38);
+}
+
+.content-card h2 {
+  font-family: var(--font-display), var(--font-body), system-ui, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 0.8rem;
+  color: var(--text-cream-muted);
+}
+
+.content-card p {
+  margin: 0 0 1rem;
+  line-height: 1.72;
+  font-size: 1.03rem;
+  color: rgba(242, 232, 210, 0.92);
+}
+
+.content-card p:last-child {
+  margin-bottom: 0;
+}
+
 .project-card {
   display: flex;
   flex-direction: column;
-  border-radius: 1.75rem;
+  border-radius: 1.25rem;
   overflow: hidden;
   text-decoration: none;
   color: inherit;
-  transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), 
-              box-shadow 0.25s ease;
+  background: rgba(16, 15, 14, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1),
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   content-visibility: auto;
   contain-intrinsic-size: auto 18rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.38);
 }
 
 .project-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 35px 90px rgba(0, 0, 0, 0.6);
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.48);
   color: inherit;
 }
 
@@ -1441,10 +1480,8 @@ a:hover {
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(10, 10, 12, 0.1) 0%,
-    rgba(10, 10, 12, 0.35) 45%,
-    rgba(255, 109, 41, 0.08) 82%,
-    rgba(10, 10, 12, 0.6) 100%
+    rgba(10, 10, 12, 0.05) 0%,
+    rgba(10, 10, 12, 0.28) 100%
   );
 }
 
