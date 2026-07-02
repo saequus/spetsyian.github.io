@@ -7,6 +7,7 @@ export default function LinksPage() {
       title="Favorite Links | Slava Saequus"
       description="Resources that have shaped my worldview and aspirations."
       contentClassName="content-wide"
+      scrollNavCollapse={false}
     >
       <header className="links-page-intro">
         <h1>Favorite Links</h1>

@@ -43,8 +43,9 @@ export default function SiteShell({
         <GlassNav scrollNavCollapse={scrollNavCollapse} />
         <main className={`content-layer ${contentClassName}`}>
           <PageEnter>{children}</PageEnter>
+          <div className="page-footer-spacer" aria-hidden />
         </main>
-        <GlassFooter />
+        <GlassFooter scrollNavCollapse={scrollNavCollapse} />
       </div>
     </>
   )

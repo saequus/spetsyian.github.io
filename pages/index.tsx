@@ -88,8 +88,6 @@ export default function Home() {
             or <a href={PROFILE.linkedIn} target="_blank" rel="noopener noreferrer">LinkedIn</a>.
           </p>
         </section>
-
-        <div className="home-page-spacer" aria-hidden />
       </div>
     </SiteShell>
   )

@@ -32,6 +32,7 @@ function applyEnterAnimations(root: HTMLElement, reset = false) {
 
   const nodes = Array.from(root.querySelectorAll(ENTER_SELECTOR))
   const filtered = nodes.filter((el) => {
+    if (el.classList.contains('page-footer-spacer')) return false
     if (el.classList.contains('home-page-spacer')) return false
     if (el.classList.contains('home-page')) return false
     if (el.classList.contains('book-call-panel')) return false

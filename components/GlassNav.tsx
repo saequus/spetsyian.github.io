@@ -262,10 +262,10 @@ export default function GlassNav({ scrollNavCollapse = true }: GlassNavProps) {
     const expandedWidth = viewport * 0.5
     const expandedLeft = (viewport - expandedWidth) / 2
     const dropLeft = Math.max(
-      40,
+      220,
       Number.parseFloat(
         getComputedStyle(document.documentElement).getPropertyValue('--layout-inset')
-      ) || 40
+      ) || 220
     )
     const dropSize = navShellHeightPx
     const width = dropSize + (expandedWidth - dropSize) * shellExpandProgress
