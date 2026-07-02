@@ -677,19 +677,23 @@ a:hover {
   position: absolute;
   top: 0;
   left: 0;
-  height: 100%;
   border-radius: 9999px;
-  background: rgba(var(--tint-orange-rgb), 0.2);
+  background: rgba(var(--tint-orange-rgb), 0.22);
   box-shadow:
-    0 0 0 1px rgba(var(--tint-orange-rgb), 0.32),
-    0 6px 22px rgba(var(--tint-orange-rgb), 0.14);
+    0 0 0 1px rgba(var(--tint-orange-rgb), 0.34),
+    0 6px 22px rgba(var(--tint-orange-rgb), 0.16);
   pointer-events: none;
   z-index: 0;
   transition:
-    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
-    width 0.9s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.5s ease;
-  will-change: transform, width;
+    transform 1s cubic-bezier(0.22, 1, 0.36, 1),
+    width 1s cubic-bezier(0.22, 1, 0.36, 1),
+    height 1s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.45s ease;
+  will-change: transform, width, height;
+}
+
+.glass-nav-tab-indicator.is-instant {
+  transition: none;
 }
 
 .glass-nav-burger {
@@ -874,7 +878,8 @@ a:hover {
     transition: none;
   }
 
-  .glass-nav-tab-indicator {
+  .glass-nav-tab-indicator,
+  .glass-nav-tab-indicator.is-instant {
     transition: none;
   }
 
@@ -939,6 +944,8 @@ a:hover {
 
 .glass-nav .nav-icon-link,
 .glass-footer .nav-icon-link {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -947,13 +954,17 @@ a:hover {
   margin: 0 4px;
   border-radius: 9999px;
   text-decoration: none;
-  transition: background 0.15s ease, box-shadow 0.2s ease;
+  transition: color 0.55s ease, box-shadow 0.2s ease;
 }
 
 .glass-nav .nav-icon-link:hover,
 .glass-footer .nav-icon-link:hover {
-  background: rgba(var(--tint-orange-rgb), 0.126);
   box-shadow: 0 0 0 1px rgba(var(--tint-orange-rgb), 0.225);
+}
+
+.glass-nav .nav-icon-link.is-active .glass-icon {
+  color: #fff8eb;
+  opacity: 1;
 }
 
 /* ─── Glass footer ─────────────────────────────────────────────────────────── */

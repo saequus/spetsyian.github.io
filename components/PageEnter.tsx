@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
-import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
+import { useIsomorphicLayoutEffect } from '../lib/useIsomorphicLayoutEffect'
 
 const STAGGER_MS = 120
 const BASE_DELAY_MS = 80
@@ -57,7 +58,7 @@ export default function PageEnter({ children }: Props) {
   const router = useRouter()
   const ref = useRef<HTMLDivElement>(null)
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const root = ref.current
     if (!root) return
     applyEnterAnimations(root, true)

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useIsomorphicLayoutEffect } from '../lib/useIsomorphicLayoutEffect'
 import { Calendar, Copy, Github, Home, Mail, Menu, X } from 'lucide-react'
 
 const EMAIL_PRIMARY = 'slava@spetsyian.com'
@@ -13,9 +14,20 @@ const MENU_LINKS = [
   { href: 'https://t.me/spetsyian#', label: 'Blog', external: true },
 ] as const
 
+/** Internal routes tracked by the sliding indicator (most specific first). */
+const NAV_ROUTE_MATCHERS = [
+  '/calendar/',
+  '/projects/',
+  '/work/',
+  '/links/',
+  '/',
+] as const
+
 type TabIndicator = {
   left: number
+  top: number
   width: number
+  height: number
   visible: boolean
 }
 
@@ -26,6 +38,13 @@ function isTabActive(href: string, pathname: string) {
   return current === tabPath || current.startsWith(`${tabPath}/`)
 }
 
+function getActiveNavHref(pathname: string): string | null {
+  for (const href of NAV_ROUTE_MATCHERS) {
+    if (isTabActive(href, pathname)) return href
+  }
+  return null
+}
+
 export default function GlassNav() {
   const router = useRouter()
   const [open, setOpen] = useState(false)
@@ -34,38 +53,51 @@ export default function GlassNav() {
   const [drawerCopied, setDrawerCopied] = useState<string | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const anchorRef = useRef<HTMLDivElement>(null)
-  const tabsRef = useRef<HTMLDivElement>(null)
-  const tabRefs = useRef<Map<string, HTMLElement>>(new Map())
+  const navRef = useRef<HTMLElement>(null)
+  const navItemRefs = useRef<Map<string, HTMLElement>>(new Map())
   const drawerCopyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const skipIndicatorTransitionRef = useRef(true)
+  const [indicatorCanAnimate, setIndicatorCanAnimate] = useState(false)
   const [tabIndicator, setTabIndicator] = useState<TabIndicator>({
     left: 0,
+    top: 0,
     width: 0,
+    height: 0,
     visible: false,
   })
 
   const showPopover = open || hovering
+  const activeNavHref = getActiveNavHref(router.pathname)
+
+  const setNavItemRef = useCallback(
+    (href: string) => (el: HTMLElement | null) => {
+      if (el) navItemRefs.current.set(href, el)
+      else navItemRefs.current.delete(href)
+    },
+    []
+  )
 
   const updateTabIndicator = useCallback(() => {
-    const container = tabsRef.current
-    if (!container) return
+    const navEl = navRef.current
+    if (!navEl) return
 
-    const activeTab = MENU_LINKS.find(
-      (item) => !item.external && isTabActive(item.href, router.pathname)
-    )
-    if (!activeTab) {
+    const activeHref = getActiveNavHref(router.pathname)
+    if (!activeHref) {
       setTabIndicator((prev) => ({ ...prev, visible: false }))
       return
     }
 
-    const tabEl = tabRefs.current.get(activeTab.href)
-    if (!tabEl) return
+    const targetEl = navItemRefs.current.get(activeHref)
+    if (!targetEl) return
 
-    const containerRect = container.getBoundingClientRect()
-    const tabRect = tabEl.getBoundingClientRect()
+    const navRect = navEl.getBoundingClientRect()
+    const targetRect = targetEl.getBoundingClientRect()
 
     setTabIndicator({
-      left: tabRect.left - containerRect.left,
-      width: tabRect.width,
+      left: targetRect.left - navRect.left,
+      top: targetRect.top - navRect.top,
+      width: targetRect.width,
+      height: targetRect.height,
       visible: true,
     })
   }, [router.pathname])
@@ -100,8 +132,15 @@ export default function GlassNav() {
     setMenuOpen(false)
   }, [router.pathname])
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     updateTabIndicator()
+
+    if (skipIndicatorTransitionRef.current) {
+      skipIndicatorTransitionRef.current = false
+      requestAnimationFrame(() => {
+        setIndicatorCanAnimate(true)
+      })
+    }
   }, [updateTabIndicator])
 
   useEffect(() => {
@@ -211,25 +250,32 @@ export default function GlassNav() {
       </div>
 
       <nav
+        ref={navRef}
         className="liquid-glass liquid-glass--tint glass-nav glass-nav--desktop"
         aria-label="Primary"
       >
+        <span
+          className={`glass-nav-tab-indicator${indicatorCanAnimate ? '' : ' is-instant'}`}
+          aria-hidden
+          style={{
+            transform: `translate(${tabIndicator.left}px, ${tabIndicator.top}px)`,
+            width: tabIndicator.visible ? tabIndicator.width : 0,
+            height: tabIndicator.visible ? tabIndicator.height : 0,
+            opacity: tabIndicator.visible ? 1 : 0,
+          }}
+        />
         <div className="glass-nav-cluster glass-nav-cluster--start">
-          <Link href="/" className="nav-icon-link" aria-label="Home">
+          <Link
+            href="/"
+            className={`nav-icon-link${activeNavHref === '/' ? ' is-active' : ''}`}
+            aria-label="Home"
+            ref={setNavItemRef('/')}
+          >
             <Home className="glass-icon" size={20} strokeWidth={1.75} />
           </Link>
-          <div className="glass-nav-desktop-inline glass-nav-tabs" ref={tabsRef}>
-            <span
-              className="glass-nav-tab-indicator"
-              aria-hidden
-              style={{
-                transform: `translateX(${tabIndicator.left}px)`,
-                width: tabIndicator.visible ? tabIndicator.width : 0,
-                opacity: tabIndicator.visible ? 1 : 0,
-              }}
-            />
+          <div className="glass-nav-desktop-inline glass-nav-tabs">
             {MENU_LINKS.map((item) => {
-              const active = !item.external && isTabActive(item.href, router.pathname)
+              const active = !item.external && activeNavHref === item.href
               const className = `nav-text glass-label${active ? ' is-active' : ''}`
 
               if (item.external) {
@@ -251,10 +297,7 @@ export default function GlassNav() {
                   key={item.href}
                   href={item.href}
                   className={className}
-                  ref={(el) => {
-                    if (el) tabRefs.current.set(item.href, el)
-                    else tabRefs.current.delete(item.href)
-                  }}
+                  ref={setNavItemRef(item.href)}
                 >
                   {item.label}
                 </Link>
@@ -339,7 +382,12 @@ export default function GlassNav() {
             ) : null}
           </div>
 
-          <Link href="/calendar/" className="nav-icon-link" aria-label="Calendar">
+          <Link
+            href="/calendar/"
+            className={`nav-icon-link${activeNavHref === '/calendar/' ? ' is-active' : ''}`}
+            aria-label="Calendar"
+            ref={setNavItemRef('/calendar/')}
+          >
             <Calendar className="glass-icon" size={20} strokeWidth={1.75} />
           </Link>
 
@@ -370,7 +418,7 @@ export default function GlassNav() {
       >
         <ul className="glass-nav-drawer-list">
           {MENU_LINKS.map((item) => {
-            const active = !item.external && isTabActive(item.href, router.pathname)
+            const active = !item.external && activeNavHref === item.href
             const className = `glass-nav-drawer-link${active ? ' is-active' : ''}`
 
             return (
