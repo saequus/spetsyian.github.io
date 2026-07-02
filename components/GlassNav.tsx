@@ -147,7 +147,12 @@ function getNavScrollMode(scrollY: number, pinned: boolean): NavScrollMode {
   return 'transition'
 }
 
-export default function GlassNav() {
+type GlassNavProps = {
+  /** When false, nav stays fully expanded on scroll (desktop). */
+  scrollNavCollapse?: boolean
+}
+
+export default function GlassNav({ scrollNavCollapse = true }: GlassNavProps) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [hovering, setHovering] = useState(false)
@@ -182,10 +187,11 @@ export default function GlassNav() {
 
   const showPopover = open || hovering
   const activeNavHref = getActiveNavHref(router.pathname)
-  const navScrollMode = desktopNav
+  const collapseActive = scrollNavCollapse && desktopNav
+  const navScrollMode = collapseActive
     ? getNavScrollMode(scrollY, scrollPinned)
     : 'expanded'
-  const transitionProgress = desktopNav
+  const transitionProgress = collapseActive
     ? getTransitionProgress(scrollY, scrollPinned)
     : 0
   const itemHideProgress = Math.min(1, transitionProgress * 2)
@@ -212,7 +218,7 @@ export default function GlassNav() {
 
   const getTransitionItemClass = useCallback(
     (index: number) => {
-      if (!desktopNav || scrollPinned) return ''
+      if (!collapseActive || scrollPinned) return ''
       if (transitionProgress <= 0) return ''
       if (transitionProgress >= 1) return 'is-nav-item-unfold-hidden'
 
@@ -228,7 +234,7 @@ export default function GlassNav() {
       return 'is-nav-item-unfold-hidden'
     },
     [
-      desktopNav,
+      collapseActive,
       scrollPinned,
       transitionProgress,
       itemHideProgress,
@@ -428,7 +434,7 @@ export default function GlassNav() {
   }, [desktopNav, router.pathname, navAnimPhase])
 
   useEffect(() => {
-    if (!desktopNav) {
+    if (!collapseActive) {
       setNavAnimPhase('open')
       navAnimPhaseRef.current = 'open'
       return
@@ -440,7 +446,7 @@ export default function GlassNav() {
 
     setNavAnimPhase(phase)
     navAnimPhaseRef.current = phase
-  }, [scrollY, scrollPinned, desktopNav])
+  }, [scrollY, scrollPinned, collapseActive])
 
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 768px)')
@@ -463,21 +469,23 @@ export default function GlassNav() {
       setScrollY(y)
       lastScrollYRef.current = y
 
-      if (y > SCROLL_COLLAPSE_THRESHOLD) {
+      if (scrollNavCollapse && y > SCROLL_COLLAPSE_THRESHOLD) {
         setScrollPinned(false)
       }
 
-      const mode = getNavScrollMode(y, false)
-      if (mode === 'drop') {
-        setOpen(false)
-        setHovering(false)
+      if (scrollNavCollapse) {
+        const mode = getNavScrollMode(y, false)
+        if (mode === 'drop') {
+          setOpen(false)
+          setHovering(false)
+        }
       }
     }
 
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [desktopNav])
+  }, [desktopNav, scrollNavCollapse])
 
   useIsomorphicLayoutEffect(() => {
     updateTabIndicator()

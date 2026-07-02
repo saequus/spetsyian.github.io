@@ -54,6 +54,21 @@ open ◄────────────────────────
 
 **Pinned expand:** clicking the collapsed circle sets `scrollPinned`, jumps to `open`, and runs a **time-based** item reveal (not scroll-driven).
 
+## Per-page enable / disable
+
+Scroll collapse/unfold can be turned off per page. When disabled, desktop nav stays **fully expanded** at all scroll positions (no transition zone, no circle).
+
+| API | Default | Purpose |
+|-----|---------|---------|
+| `SiteShell` prop `scrollNavCollapse` | `true` | Page-level toggle |
+| `GlassNav` prop `scrollNavCollapse` | `true` | Passed from shell |
+
+**Disabled pages (current):**
+
+- `/calendar/` — `scrollNavCollapse={false}` on `SiteShell`
+
+To disable on another page, pass `scrollNavCollapse={false}` to that page’s `SiteShell`.
+
 ## Scroll rules
 
 | Constant | Value | Purpose |

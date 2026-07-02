@@ -19,6 +19,7 @@ export default function CalendarPage() {
       title="Book a call | Slava Saequus"
       description="Schedule a call — pick a date and time (CET)."
       contentClassName="content-booking"
+      scrollNavCollapse={false}
     >
       <header className="calendar-page-intro">
         <h1>Book a call</h1>

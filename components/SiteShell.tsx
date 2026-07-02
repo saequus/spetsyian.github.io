@@ -14,6 +14,8 @@ type Props = {
   title?: string
   description?: string
   contentClassName?: string
+  /** Desktop scroll collapse/unfold animation. Default true. */
+  scrollNavCollapse?: boolean
 }
 
 const defaultDesc =
@@ -24,6 +26,7 @@ export default function SiteShell({
   title = 'Slava Saequus',
   description = defaultDesc,
   contentClassName = 'content-narrow',
+  scrollNavCollapse = true,
 }: Props) {
   return (
     <>
@@ -37,7 +40,7 @@ export default function SiteShell({
       </Head>
       <div className="page-root">
         <VideoBackground />
-        <GlassNav />
+        <GlassNav scrollNavCollapse={scrollNavCollapse} />
         <main className={`content-layer ${contentClassName}`}>
           <PageEnter>{children}</PageEnter>
         </main>
