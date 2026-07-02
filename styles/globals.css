@@ -42,6 +42,11 @@ html {
   --touch-min: 44px;
   --nav-phase-duration: 0.82s;
   --nav-item-stagger: 0.065s;
+  --nav-unfold-anim-multiplier: 4;
+  --nav-unfold-phase-duration: calc(
+    var(--nav-phase-duration) * var(--nav-unfold-anim-multiplier, 4)
+  );
+  --nav-shell-height: 3.375rem;
   --nav-item-count: 9;
   --nav-phase-gap: calc(
     (var(--nav-item-count) - 1) * var(--nav-item-stagger) + var(--nav-phase-duration)
@@ -509,16 +514,8 @@ a:hover {
     left: var(--layout-inset);
     right: auto;
     transform: none;
-    width: 3.375rem;
+    width: var(--nav-shell-height, 3.375rem);
     transition-delay: 0s;
-  }
-
-  .glass-nav-wrap.is-nav-unfolding {
-    left: var(--nav-unfold-left, var(--layout-inset));
-    right: auto;
-    transform: none;
-    width: var(--nav-unfold-width, 3.375rem);
-    transition: none;
   }
 
   .glass-nav-wrap.is-nav-expanded {
@@ -527,6 +524,15 @@ a:hover {
     transform: translateX(-50%);
     width: 50vw;
     transition-delay: 0s;
+  }
+
+  .glass-nav-wrap.is-nav-unfolding {
+    left: var(--nav-unfold-left, var(--layout-inset));
+    right: auto;
+    transform: none;
+    width: var(--nav-unfold-width, var(--nav-shell-height, 3.375rem));
+    min-height: var(--nav-shell-height, 3.375rem);
+    transition: none;
   }
 }
 
@@ -685,10 +691,11 @@ a:hover {
   }
 
   .glass-nav.is-nav-drop {
-    width: 3.375rem;
-    height: 3.375rem;
+    width: var(--nav-shell-height, 3.375rem);
+    height: var(--nav-shell-height, 3.375rem);
+    min-height: var(--nav-shell-height, 3.375rem);
     padding: 0;
-    border-radius: 58% 58% 52% 52% / 62% 62% 38% 38%;
+    border-radius: 50%;
     overflow: hidden;
     cursor: pointer;
     transition-delay: 0s;
@@ -698,22 +705,22 @@ a:hover {
       inset 0 1px 1.5px rgba(255, 255, 255, 0.16);
   }
 
-  .glass-nav.is-nav-unfolding {
-    width: 100%;
-    height: auto;
-    padding: calc(0.2rem + 0.3rem * var(--nav-unfold-progress, 0))
-      calc(0.45rem + 0.65rem * var(--nav-unfold-progress, 0));
-    border-radius: var(--nav-unfold-radius, 9999px);
-    overflow: visible;
-    transition: none;
-  }
-
   .glass-nav.is-nav-expanded {
     width: 100%;
     height: auto;
     border-radius: 9999px;
     overflow: visible;
     transition-delay: 0s;
+  }
+
+  .glass-nav.is-nav-unfolding {
+    width: 100%;
+    height: var(--nav-shell-height, 3.375rem);
+    min-height: var(--nav-shell-height, 3.375rem);
+    padding: 0.5rem 1.1rem;
+    border-radius: var(--nav-unfold-radius, 50%);
+    overflow: visible;
+    transition: none;
   }
 }
 
@@ -759,6 +766,7 @@ a:hover {
 }
 
 .glass-nav-chrome {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -833,12 +841,20 @@ a:hover {
     transition-delay: 0s;
   }
 
-  .glass-nav.is-nav-unfolding:not(.is-nav-reveal-items) .nav-chrome-item {
+  .glass-nav.is-nav-unfolding .nav-chrome-item.is-nav-item-unfold-hidden {
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
     transform: translateX(-14px) scale(0.94);
     filter: blur(2px);
     animation: none;
+  }
+
+  .glass-nav.is-nav-unfolding .nav-chrome-item.is-nav-item-unfold-revealed {
+    visibility: visible;
+    pointer-events: auto;
+    animation: nav-item-show var(--nav-unfold-phase-duration) cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: 0s;
   }
 
   .glass-nav.is-nav-expanded:not(.is-nav-unfolding):not(.is-nav-reveal-items):not(.is-nav-collapsing)
@@ -851,8 +867,11 @@ a:hover {
   }
 
   .glass-nav.is-nav-reveal-items .nav-chrome-item {
-    visibility: visible;
-    animation: nav-item-show var(--nav-phase-duration) cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-14px) scale(0.94);
+    filter: blur(2px);
+    animation: nav-item-show var(--nav-phase-duration) cubic-bezier(0.22, 1, 0.36, 1) both;
     animation-delay: var(--nav-expand-delay, 0s);
   }
 
@@ -935,21 +954,20 @@ a:hover {
 
 .glass-nav-tab-indicator {
   position: absolute;
-  top: 0;
-  left: 0;
   border-radius: 9999px;
   background: rgba(var(--tint-orange-rgb), 0.22);
   box-shadow:
-    0 0 0 1px rgba(var(--tint-orange-rgb), 0.34),
+    inset 0 0 0 1px rgba(var(--tint-orange-rgb), 0.34),
     0 6px 22px rgba(var(--tint-orange-rgb), 0.16);
   pointer-events: none;
   z-index: 0;
   transition:
-    transform 1s cubic-bezier(0.22, 1, 0.36, 1),
+    left 1s cubic-bezier(0.22, 1, 0.36, 1),
+    top 1s cubic-bezier(0.22, 1, 0.36, 1),
     width 1s cubic-bezier(0.22, 1, 0.36, 1),
     height 1s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.45s ease;
-  will-change: transform, width, height;
+  will-change: left, top, width, height;
 }
 
 .glass-nav-tab-indicator.is-instant {
@@ -1151,7 +1169,8 @@ a:hover {
   }
 
   .glass-nav.is-nav-collapsing .nav-chrome-item,
-  .glass-nav.is-nav-reveal-items .nav-chrome-item {
+  .glass-nav.is-nav-reveal-items .nav-chrome-item,
+  .glass-nav.is-nav-unfolding .nav-chrome-item.is-nav-item-unfold-revealed {
     animation: none;
     opacity: 1;
     visibility: visible;

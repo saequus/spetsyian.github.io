@@ -12,10 +12,11 @@ import { useIsomorphicLayoutEffect } from '../lib/useIsomorphicLayoutEffect'
 import { Calendar, Copy, Github, Home, Mail, Menu, X } from 'lucide-react'
 
 const SCROLL_COLLAPSE_THRESHOLD = 8
-const UNFOLD_ZONE_PX = 80
+const UNFOLD_ZONE_PX = 320
 const DROP_SIZE_PX = 54
 const NAV_CHROME_ITEM_COUNT = 9
 const NAV_ITEM_STAGGER_S = 0.08
+const NAV_UNFOLD_ANIM_MULTIPLIER = 4
 const NAV_PHASE_DURATION_MS = 820
 const NAV_ITEMS_COLLAPSE_MS =
   (NAV_CHROME_ITEM_COUNT - 1) * NAV_ITEM_STAGGER_S * 1000 + NAV_PHASE_DURATION_MS
@@ -50,6 +51,14 @@ const NAV_ROUTE_MATCHERS = [
   '/',
 ] as const
 
+const NAV_ITEM_INDEX_BY_HREF: Record<string, number> = {
+  '/': 0,
+  '/links/': 1,
+  '/work/': 2,
+  '/projects/': 3,
+  '/calendar/': 8,
+}
+
 type TabIndicator = {
   left: number
   top: number
@@ -70,6 +79,56 @@ function getActiveNavHref(pathname: string): string | null {
     if (isTabActive(href, pathname)) return href
   }
   return null
+}
+
+function isActiveNavItemRevealed(
+  activeHref: string | null,
+  isNavUnfolding: boolean,
+  shellProgress: number,
+  linkProgress: number
+) {
+  if (!activeHref) return false
+  if (!isNavUnfolding) return true
+  if (shellProgress < 1) return false
+
+  const index = NAV_ITEM_INDEX_BY_HREF[activeHref]
+  if (index === undefined) return false
+
+  return linkProgress >= index / NAV_CHROME_ITEM_COUNT
+}
+
+/** Layout box relative to container — ignores CSS transforms on the target. */
+function getTabIndicatorBounds(targetEl: HTMLElement, containerEl: HTMLElement) {
+  let left = 0
+  let top = 0
+  let node: HTMLElement | null = targetEl
+
+  while (node && node !== containerEl) {
+    left += node.offsetLeft
+    top += node.offsetTop
+
+    const parent = node.offsetParent as HTMLElement | null
+    if (!parent || (parent !== containerEl && !containerEl.contains(parent))) {
+      const containerRect = containerEl.getBoundingClientRect()
+      const targetRect = targetEl.getBoundingClientRect()
+
+      return {
+        left: targetRect.left - containerRect.left,
+        top: targetRect.top - containerRect.top,
+        width: targetEl.offsetWidth,
+        height: targetEl.offsetHeight,
+      }
+    }
+
+    node = parent
+  }
+
+  return {
+    left,
+    top,
+    width: targetEl.offsetWidth,
+    height: targetEl.offsetHeight,
+  }
 }
 
 type NavScrollMode = 'expanded' | 'drop' | 'unfolding'
@@ -93,6 +152,7 @@ export default function GlassNav() {
   const [menuOpen, setMenuOpen] = useState(false)
   const anchorRef = useRef<HTMLDivElement>(null)
   const navRef = useRef<HTMLElement>(null)
+  const navChromeRef = useRef<HTMLDivElement>(null)
   const navWrapRef = useRef<HTMLDivElement>(null)
   const navItemRefs = useRef<Map<string, HTMLElement>>(new Map())
   const drawerCopyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -105,9 +165,12 @@ export default function GlassNav() {
   const [desktopNav, setDesktopNav] = useState(false)
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const navAnimTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const navAnimPhaseRef = useRef<'open' | 'hiding-items' | 'drop'>('open')
-  const [navAnimPhase, setNavAnimPhase] = useState<'open' | 'hiding-items' | 'drop'>('open')
+  const navAnimPhaseRef = useRef<'open' | 'hiding-items' | 'drop' | 'unfolding'>('open')
+  const [navAnimPhase, setNavAnimPhase] = useState<
+    'open' | 'hiding-items' | 'drop' | 'unfolding'
+  >('open')
   const [indicatorCanAnimate, setIndicatorCanAnimate] = useState(false)
+  const [navShellHeightPx, setNavShellHeightPx] = useState(DROP_SIZE_PX)
   const [tabIndicator, setTabIndicator] = useState<TabIndicator>({
     left: 0,
     top: 0,
@@ -123,10 +186,13 @@ export default function GlassNav() {
     : 'expanded'
   const isHidingItems = navAnimPhase === 'hiding-items'
   const isShellDrop = navAnimPhase === 'drop'
-  const isNavUnfolding = navScrollMode === 'unfolding' && !isShellDrop && !isHidingItems
+  const isNavUnfolding =
+    navAnimPhase === 'unfolding' ||
+    (navScrollMode === 'unfolding' && !isShellDrop && !isHidingItems)
   const isNavExpandedShell =
     !isShellDrop &&
-    (navScrollMode === 'expanded' || scrollPinned || isHidingItems || isNavUnfolding)
+    !isNavUnfolding &&
+    (navScrollMode === 'expanded' || scrollPinned || isHidingItems)
   const unfoldProgress = isNavUnfolding
     ? Math.max(0, Math.min(1, 1 - scrollY / UNFOLD_ZONE_PX))
     : navScrollMode === 'expanded'
@@ -134,13 +200,45 @@ export default function GlassNav() {
       : 0
   const shellProgress = Math.min(1, unfoldProgress * 2)
   const linkProgress = Math.max(0, unfoldProgress * 2 - 1)
-  const isRevealingItems =
-    (isNavUnfolding && linkProgress > 0) || (revealLinks && !isShellDrop && !isHidingItems)
+  const isClickRevealingItems = revealLinks && !isShellDrop && !isHidingItems
+  const isActiveItemRevealed = isActiveNavItemRevealed(
+    activeNavHref,
+    isNavUnfolding,
+    shellProgress,
+    linkProgress
+  )
+  const showTabIndicator =
+    tabIndicator.visible &&
+    !isShellDrop &&
+    !isHidingItems &&
+    isActiveItemRevealed
+
+  const getUnfoldItemClass = useCallback(
+    (index: number) => {
+      if (!isNavUnfolding) return ''
+      if (shellProgress < 1) return 'is-nav-item-unfold-hidden'
+      return linkProgress >= index / NAV_CHROME_ITEM_COUNT
+        ? 'is-nav-item-unfold-revealed'
+        : 'is-nav-item-unfold-hidden'
+    },
+    [isNavUnfolding, shellProgress, linkProgress]
+  )
+
+  const shellMetricsStyle = useMemo(() => {
+    if (!desktopNav) return undefined
+
+    return {
+      ['--nav-shell-height' as string]: `${navShellHeightPx}px`,
+      ['--nav-unfold-anim-multiplier' as string]: String(NAV_UNFOLD_ANIM_MULTIPLIER),
+    } as CSSProperties
+  }, [desktopNav, navShellHeightPx])
 
   const navWrapStyle = useMemo(() => {
-    if (!desktopNav || navScrollMode !== 'unfolding') return undefined
+    if (!desktopNav) return shellMetricsStyle
 
-    if (typeof window === 'undefined') return undefined
+    if (!isNavUnfolding) return shellMetricsStyle
+
+    if (typeof window === 'undefined') return shellMetricsStyle
 
     const viewport = window.innerWidth
     const expandedWidth = viewport * 0.5
@@ -151,27 +249,37 @@ export default function GlassNav() {
         getComputedStyle(document.documentElement).getPropertyValue('--layout-inset')
       ) || 40
     )
-
-    const width = DROP_SIZE_PX + (expandedWidth - DROP_SIZE_PX) * shellProgress
+    const dropSize = navShellHeightPx
+    const width = dropSize + (expandedWidth - dropSize) * shellProgress
     const left = dropLeft + (expandedLeft - dropLeft) * shellProgress
+    const radius = dropSize / 2 + (9999 - dropSize / 2) * shellProgress
 
     return {
+      ...shellMetricsStyle,
       ['--nav-unfold-progress' as string]: String(shellProgress),
       ['--nav-link-progress' as string]: String(linkProgress),
       ['--nav-unfold-width' as string]: `${width}px`,
       ['--nav-unfold-left' as string]: `${left}px`,
-      ['--nav-unfold-radius' as string]: `${26 + (9999 - 26) * shellProgress}px`,
+      ['--nav-unfold-radius' as string]: `${radius}px`,
     } as CSSProperties
-  }, [desktopNav, navScrollMode, shellProgress, linkProgress])
+  }, [
+    desktopNav,
+    isNavUnfolding,
+    shellProgress,
+    linkProgress,
+    navShellHeightPx,
+    shellMetricsStyle,
+  ])
 
   const navStyle = useMemo(() => {
     if (!desktopNav) return undefined
 
     const base = {
+      ...shellMetricsStyle,
       ['--nav-item-count' as string]: String(NAV_CHROME_ITEM_COUNT),
     } as CSSProperties
 
-    if (navScrollMode === 'unfolding') {
+    if (isNavUnfolding) {
       return {
         ...base,
         ['--nav-unfold-progress' as string]: String(shellProgress),
@@ -192,7 +300,14 @@ export default function GlassNav() {
       ['--nav-unfold-progress' as string]: '0',
       ['--nav-link-progress' as string]: '0',
     } as CSSProperties
-  }, [desktopNav, navScrollMode, shellProgress, linkProgress])
+  }, [
+    desktopNav,
+    isNavUnfolding,
+    navScrollMode,
+    shellProgress,
+    linkProgress,
+    shellMetricsStyle,
+  ])
 
   const setNavItemRef = useCallback(
     (href: string) => (el: HTMLElement | null) => {
@@ -203,8 +318,8 @@ export default function GlassNav() {
   )
 
   const updateTabIndicator = useCallback(() => {
-    const navEl = navRef.current
-    if (!navEl) return
+    const chromeEl = navChromeRef.current
+    if (!chromeEl) return
 
     const activeHref = getActiveNavHref(router.pathname)
     if (!activeHref) {
@@ -215,17 +330,28 @@ export default function GlassNav() {
     const targetEl = navItemRefs.current.get(activeHref)
     if (!targetEl) return
 
-    const navRect = navEl.getBoundingClientRect()
-    const targetRect = targetEl.getBoundingClientRect()
+    if (
+      !isActiveNavItemRevealed(
+        activeHref,
+        isNavUnfolding,
+        shellProgress,
+        linkProgress
+      )
+    ) {
+      setTabIndicator((prev) => ({ ...prev, visible: false }))
+      return
+    }
+
+    const bounds = getTabIndicatorBounds(targetEl, chromeEl)
 
     setTabIndicator({
-      left: targetRect.left - navRect.left,
-      top: targetRect.top - navRect.top,
-      width: targetRect.width,
-      height: targetRect.height,
+      left: bounds.left,
+      top: bounds.top,
+      width: bounds.width,
+      height: bounds.height,
       visible: true,
     })
-  }, [router.pathname])
+  }, [router.pathname, isNavUnfolding, shellProgress, linkProgress])
 
   const copyEmail = useCallback(async (address: string) => {
     try {
@@ -272,6 +398,24 @@ export default function GlassNav() {
   }, [isShellDrop])
 
   useEffect(() => {
+    const navEl = navRef.current
+    if (!navEl || !desktopNav) return
+
+    const measure = () => {
+      if (navAnimPhaseRef.current === 'drop') return
+      const height = Math.round(navEl.getBoundingClientRect().height)
+      if (height > 0) {
+        setNavShellHeightPx((prev) => (prev === height ? prev : height))
+      }
+    }
+
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(navEl)
+    return () => observer.disconnect()
+  }, [desktopNav, router.pathname, navAnimPhase])
+
+  useEffect(() => {
     if (!desktopNav) {
       if (navAnimTimerRef.current) {
         clearTimeout(navAnimTimerRef.current)
@@ -285,7 +429,10 @@ export default function GlassNav() {
     const target = getNavScrollMode(scrollY, scrollingDown, scrollPinned)
 
     if (target === 'drop' && !scrollPinned) {
-      if (navAnimPhaseRef.current === 'open') {
+      if (
+        navAnimPhaseRef.current === 'open' ||
+        navAnimPhaseRef.current === 'unfolding'
+      ) {
         if (navAnimTimerRef.current) {
           clearTimeout(navAnimTimerRef.current)
         }
@@ -309,7 +456,15 @@ export default function GlassNav() {
       navAnimTimerRef.current = null
     }
 
-    if (navAnimPhaseRef.current !== 'open') {
+    if (target === 'unfolding') {
+      if (navAnimPhaseRef.current === 'drop') {
+        setNavAnimPhase('unfolding')
+        navAnimPhaseRef.current = 'unfolding'
+      }
+      return
+    }
+
+    if (target === 'expanded' && navAnimPhaseRef.current !== 'open') {
       setNavAnimPhase('open')
       navAnimPhaseRef.current = 'open'
     }
@@ -361,7 +516,41 @@ export default function GlassNav() {
         setIndicatorCanAnimate(true)
       })
     }
-  }, [updateTabIndicator, navScrollMode])
+  }, [
+    updateTabIndicator,
+    navScrollMode,
+    navAnimPhase,
+    isShellDrop,
+    isHidingItems,
+    scrollY,
+    shellProgress,
+    linkProgress,
+    isNavUnfolding,
+  ])
+
+  useEffect(() => {
+    if (navAnimPhase !== 'open') return
+
+    const frame = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        updateTabIndicator()
+      })
+    })
+
+    return () => cancelAnimationFrame(frame)
+  }, [navAnimPhase, updateTabIndicator])
+
+  useEffect(() => {
+    const chromeEl = navChromeRef.current
+    if (!chromeEl || typeof ResizeObserver === 'undefined') return
+
+    const observer = new ResizeObserver(() => {
+      updateTabIndicator()
+    })
+    observer.observe(chromeEl)
+
+    return () => observer.disconnect()
+  }, [updateTabIndicator, desktopNav])
 
   useEffect(() => {
     window.addEventListener('resize', updateTabIndicator)
@@ -476,8 +665,8 @@ export default function GlassNav() {
     desktopNav && isHidingItems ? 'is-nav-collapsing' : '',
     desktopNav && isNavUnfolding ? 'is-nav-unfolding' : '',
     desktopNav && isNavExpandedShell ? 'is-nav-expanded' : '',
-    desktopNav && isRevealingItems ? 'is-nav-reveal-items' : '',
-    desktopNav && revealLinks && !isNavUnfolding ? 'is-nav-reveal-after-shell' : '',
+    desktopNav && isClickRevealingItems ? 'is-nav-reveal-items' : '',
+    desktopNav && isClickRevealingItems && !isNavUnfolding ? 'is-nav-reveal-after-shell' : '',
   ]
     .filter(Boolean)
     .join(' ')
@@ -529,21 +718,22 @@ export default function GlassNav() {
           <Menu className="glass-icon glass-nav-drop-icon" size={22} strokeWidth={1.75} />
         </button>
 
-        <div className="glass-nav-chrome" aria-hidden={isShellDrop}>
+        <div ref={navChromeRef} className="glass-nav-chrome" aria-hidden={isShellDrop}>
           <span
             className={`glass-nav-tab-indicator${indicatorCanAnimate && !isShellDrop && !isHidingItems ? '' : ' is-instant'}`}
             aria-hidden
             style={{
-              transform: `translate(${tabIndicator.left}px, ${tabIndicator.top}px)`,
-              width: tabIndicator.visible && !isShellDrop && !isHidingItems ? tabIndicator.width : 0,
-              height: tabIndicator.visible && !isShellDrop && !isHidingItems ? tabIndicator.height : 0,
-              opacity: tabIndicator.visible && !isShellDrop && !isHidingItems ? 1 : 0,
+              left: tabIndicator.left,
+              top: tabIndicator.top,
+              width: showTabIndicator ? tabIndicator.width : 0,
+              height: showTabIndicator ? tabIndicator.height : 0,
+              opacity: showTabIndicator ? 1 : 0,
             }}
           />
           <div className="glass-nav-cluster glass-nav-cluster--start">
             <Link
               href="/"
-              className={`nav-icon-link nav-chrome-item${activeNavHref === '/' ? ' is-active' : ''}`}
+              className={`nav-icon-link nav-chrome-item${activeNavHref === '/' ? ' is-active' : ''}${getUnfoldItemClass(0) ? ` ${getUnfoldItemClass(0)}` : ''}`}
               style={navChromeItemStyle(0)}
               aria-label="Home"
               ref={setNavItemRef('/')}
@@ -553,7 +743,7 @@ export default function GlassNav() {
             <div className="glass-nav-desktop-inline glass-nav-tabs">
               {MENU_LINKS.map((item, index) => {
                 const active = !item.external && activeNavHref === item.href
-                const className = `nav-text glass-label nav-chrome-item${active ? ' is-active' : ''}`
+                const className = `nav-text glass-label nav-chrome-item${active ? ' is-active' : ''}${getUnfoldItemClass(index + 1) ? ` ${getUnfoldItemClass(index + 1)}` : ''}`
                 const style = navChromeItemStyle(index + 1)
 
                 if (item.external) {
@@ -584,7 +774,7 @@ export default function GlassNav() {
                 )
               })}
               <span
-                className="nav-divider nav-chrome-item"
+                className={`nav-divider nav-chrome-item${getUnfoldItemClass(5) ? ` ${getUnfoldItemClass(5)}` : ''}`}
                 style={navChromeItemStyle(5)}
                 aria-hidden
               />
@@ -594,7 +784,7 @@ export default function GlassNav() {
           <div className="glass-nav-cluster glass-nav-cluster--end">
             <a
               href="https://github.com/saequus"
-              className="nav-icon-link nav-chrome-item"
+              className={`nav-icon-link nav-chrome-item${getUnfoldItemClass(6) ? ` ${getUnfoldItemClass(6)}` : ''}`}
               style={navChromeItemStyle(6)}
               target="_blank"
               rel="noopener noreferrer"
@@ -605,7 +795,7 @@ export default function GlassNav() {
 
             <div
               ref={anchorRef}
-              className={`email-pop-anchor nav-chrome-item${showPopover ? ' is-active' : ''}`}
+              className={`email-pop-anchor nav-chrome-item${showPopover ? ' is-active' : ''}${getUnfoldItemClass(7) ? ` ${getUnfoldItemClass(7)}` : ''}`}
               style={navChromeItemStyle(7)}
               onMouseEnter={() => setHovering(true)}
               onMouseLeave={() => setHovering(false)}
@@ -670,7 +860,7 @@ export default function GlassNav() {
 
             <Link
               href="/calendar/"
-              className={`nav-icon-link nav-chrome-item${activeNavHref === '/calendar/' ? ' is-active' : ''}`}
+              className={`nav-icon-link nav-chrome-item${activeNavHref === '/calendar/' ? ' is-active' : ''}${getUnfoldItemClass(8) ? ` ${getUnfoldItemClass(8)}` : ''}`}
               style={navChromeItemStyle(8)}
               aria-label="Calendar"
               ref={setNavItemRef('/calendar/')}
