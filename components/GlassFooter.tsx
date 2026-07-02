@@ -20,7 +20,10 @@ import {
 const EMAIL = 'slava@spetsyian.com'
 const FOOTER_CHROME_ITEM_COUNT = 4
 const FOOTER_ITEM_STAGGER_S = 0.065
-const FOOTER_REVEAL_MS = 2400
+const FOOTER_PHASE_DURATION_MS = 820
+const FOOTER_ITEMS_REVEAL_MS =
+  (FOOTER_CHROME_ITEM_COUNT - 1) * FOOTER_ITEM_STAGGER_S * 1000 +
+  FOOTER_PHASE_DURATION_MS
 
 function footerChromeItemStyle(index: number): CSSProperties {
   const expandDelay = index * FOOTER_ITEM_STAGGER_S
@@ -50,6 +53,7 @@ export default function GlassFooter({
   const footerRef = useRef<HTMLElement>(null)
   const [scrollY, setScrollY] = useState(0)
   const [scrollPinned, setScrollPinned] = useState(false)
+  const [chromeReady, setChromeReady] = useState(true)
   const [revealLinks, setRevealLinks] = useState(false)
   const [desktopFooter, setDesktopFooter] = useState(false)
   const [footerShellHeightPx, setFooterShellHeightPx] = useState(DROP_SIZE_PX)
@@ -76,7 +80,8 @@ export default function GlassFooter({
     !isShellDrop &&
     !isShellMorphing &&
     (transitionProgress === 0 || scrollPinned || transitionProgress <= 0.5)
-  const isClickRevealingItems = revealLinks && !isShellDrop && !scrollPinned
+  const isClickRevealingItems =
+    revealLinks && scrollPinned && chromeReady && !isShellDrop
 
   const getFooterItemClass = useCallback(
     (index: number) => {
@@ -180,27 +185,43 @@ export default function GlassFooter({
   ])
 
   const expandFromDrop = useCallback(() => {
+    setChromeReady(false)
+    setRevealLinks(false)
     setScrollPinned(true)
-    setRevealLinks(true)
     if (revealTimerRef.current) {
       clearTimeout(revealTimerRef.current)
     }
-    revealTimerRef.current = setTimeout(() => {
-      setRevealLinks(false)
-      revealTimerRef.current = null
-    }, FOOTER_REVEAL_MS)
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setChromeReady(true)
+        setRevealLinks(true)
+        revealTimerRef.current = setTimeout(() => {
+          setRevealLinks(false)
+          revealTimerRef.current = null
+        }, FOOTER_ITEMS_REVEAL_MS)
+      })
+    })
   }, [])
 
   useEffect(() => {
     setScrollPinned(false)
+    setChromeReady(true)
     setRevealLinks(false)
   }, [router.pathname])
 
   useEffect(() => {
     if (isShellDrop) {
+      setChromeReady(true)
       setRevealLinks(false)
     }
   }, [isShellDrop])
+
+  useEffect(() => {
+    if (!scrollPinned) {
+      setChromeReady(true)
+    }
+  }, [scrollPinned])
 
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 768px)')
@@ -281,11 +302,16 @@ export default function GlassFooter({
     }
   }, [])
 
+  const shortPageExpanded = collapseActive && maxScrollY < 8
+  const showFooterChrome = !isShellDrop || shortPageExpanded
+  const hideChromeForPinOpen = scrollPinned && !chromeReady
+
   const footerWrapClassName = [
     'glass-footer-wrap',
     desktopFooter && isShellDrop ? 'is-footer-drop' : '',
     desktopFooter && isShellMorphing ? 'is-footer-unfolding' : '',
     desktopFooter && isFooterExpandedShell ? 'is-footer-expanded' : '',
+    desktopFooter && scrollPinned ? 'is-footer-pinned' : '',
   ]
     .filter(Boolean)
     .join(' ')
@@ -300,13 +326,12 @@ export default function GlassFooter({
       : '',
     desktopFooter && isShellMorphing ? 'is-footer-unfolding' : '',
     desktopFooter && isFooterExpandedShell ? 'is-footer-expanded' : '',
+    desktopFooter && scrollPinned ? 'is-footer-pinned' : '',
+    desktopFooter && chromeReady ? 'is-footer-chrome-ready' : '',
     desktopFooter && isClickRevealingItems ? 'is-footer-reveal-items' : '',
-    desktopFooter && isClickRevealingItems ? 'is-footer-reveal-after-shell' : '',
   ]
     .filter(Boolean)
     .join(' ')
-
-  const shortPageExpanded = collapseActive && maxScrollY < 8
 
   return (
     <div className={footerWrapClassName} style={footerWrapStyle}>
@@ -333,7 +358,7 @@ export default function GlassFooter({
 
         <div
           className="glass-footer-chrome"
-          aria-hidden={isShellDrop && !shortPageExpanded}
+          aria-hidden={!showFooterChrome || hideChromeForPinOpen}
         >
           <div className="glass-footer-start">
             <a

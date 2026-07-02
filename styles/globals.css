@@ -1367,6 +1367,11 @@ a:hover {
     transition-delay: 0s;
   }
 
+  /* Click-expand: snap shell to full width before revealing chrome (avoids wrap reflow) */
+  .glass-footer-wrap.is-footer-pinned {
+    transition: none;
+  }
+
   .glass-footer-wrap.is-footer-unfolding {
     left: var(--footer-unfold-left, auto);
     right: auto;
@@ -1418,6 +1423,26 @@ a:hover {
     border-radius: 9999px;
     overflow: visible;
     transition-delay: 0s;
+  }
+
+  .glass-footer.is-footer-pinned {
+    transition: none;
+  }
+
+  .glass-footer.is-footer-pinned:not(.is-footer-drop) .glass-footer-chrome {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    max-height: 0;
+    overflow: hidden;
+  }
+
+  .glass-footer.is-footer-pinned.is-footer-chrome-ready:not(.is-footer-drop)
+    .glass-footer-chrome {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    max-height: 20rem;
   }
 
   .glass-footer.is-footer-unfolding {
@@ -1952,7 +1977,9 @@ a:hover {
   background: rgba(16, 15, 14, 0.96);
   border: 1px solid rgba(255, 255, 255, 0.09);
   padding: 1.35rem 1.5rem;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.38);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 109, 41, 0.2);
 }
 
 .content-card h2 {
@@ -1992,13 +2019,17 @@ a:hover {
   touch-action: manipulation;
   content-visibility: auto;
   contain-intrinsic-size: auto 18rem;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.38);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 109, 41, 0.2);
 }
 
 .project-card:hover {
   transform: translateY(-4px);
   border-color: rgba(255, 255, 255, 0.14);
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.48);
+  box-shadow:
+    0 24px 56px rgba(0, 0, 0, 0.58),
+    0 0 0 1px rgba(255, 109, 41, 0.28);
   color: inherit;
 }
 

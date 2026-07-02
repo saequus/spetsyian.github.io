@@ -133,12 +133,8 @@ Curated “favorite links” — thinkers, meta-knowledge, professional links.
 
 | Decision | Detail |
 |----------|--------|
-| Scroll chrome | **Disabled** (`scrollNavCollapse={false}`). Nav and footer remain fully expanded while scrolling. Temporary decision “for now,” same policy as Calendar. |
+| Scroll chrome | **Enabled** (default). Nav and footer fold/unfold on scroll like other content pages. |
 | Entrance animation | Header + card-grid articles still use `PageEnter` stagger. |
-
-### Rationale
-
-Favorite Links is a reading-heavy reference page. Keeping chrome permanently expanded avoids distraction while browsing long card content. Animation may be re-enabled once the page layout is stable.
 
 ---
 
@@ -180,7 +176,7 @@ Chronological decisions that shaped the current chrome system (applies to all pa
 7. **Timer gap on collapse** — Replaced timer-based “wait then circle” with **scroll-anchored** progress across a 320px zone.
 8. **All items hiding at once** — CSS specificity fix: `is-nav-expanded` no longer forces all items visible during `is-nav-transitioning`.
 9. **Active tab indicator offset** — After unfold, pill was ~10px left and slightly high; fixed with layout-coordinate measurement gated on item reveal.
-10. **Per-page disable** — `scrollNavCollapse` on `SiteShell`; Calendar first, then Links.
+10. **Per-page disable** — `scrollNavCollapse` on `SiteShell`; disabled on Calendar; Links re-enabled after layout stabilized.
 11. **Footer parity** — Same fold/unfold system bottom-anchored; shared `lib/glassChromeTransition.ts`; docs renamed to `3-chrome-animation.md`.
 12. **Layout pass** — Side insets **40px → 220px**; footer drop icon **Mail → PanelBottom**; global 320px pre-footer spacer.
 
@@ -190,7 +186,7 @@ Chronological decisions that shaped the current chrome system (applies to all pa
 
 | Topic | Notes |
 |-------|-------|
-| Re-enable chrome on `/links/` | When card layout and content are final. |
+
 | Footer drop icon | Currently `PanelBottom` (lucide). Replace if a custom brand icon is added. |
 | Work page cards | Still use tinted glass; Projects/Links use plain cards — intentional hierarchy or future alignment TBD. |
 | `content-wide` vs `content-narrow` | Both are full-width inside insets today; naming may be simplified later. |

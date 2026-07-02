@@ -134,7 +134,7 @@ If `scrollHeight ≤ viewport` (no scroll), footer stays **expanded**.
 
 When `false`: nav and footer stay fully expanded at all scroll positions.
 
-**Disabled:** `/calendar/` and `/links/` (`scrollNavCollapse={false}`).
+**Disabled:** `/calendar/` only (`scrollNavCollapse={false}`).
 
 ## State machines
 
