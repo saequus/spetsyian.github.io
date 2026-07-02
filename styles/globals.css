@@ -830,8 +830,21 @@ a:hover {
     animation: none;
   }
 
-  .glass-nav.is-nav-unfolding .glass-nav-chrome,
-  .glass-nav.is-nav-expanded .glass-nav-chrome {
+  .glass-nav.is-nav-unfolding:not(.is-nav-expanded):not(.is-nav-transitioning)
+    .glass-nav-chrome {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: scale(0.6);
+    filter: blur(3px);
+    max-height: 0;
+    overflow: hidden;
+    transition-duration: 0.35s;
+    transition-delay: 0s;
+  }
+
+  .glass-nav.is-nav-expanded .glass-nav-chrome,
+  .glass-nav.is-nav-transitioning .glass-nav-chrome {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
@@ -841,6 +854,7 @@ a:hover {
     transition-delay: 0s;
   }
 
+  .glass-nav.is-nav-transitioning .nav-chrome-item.is-nav-item-unfold-hidden,
   .glass-nav.is-nav-unfolding .nav-chrome-item.is-nav-item-unfold-hidden {
     opacity: 0;
     visibility: hidden;
@@ -850,6 +864,7 @@ a:hover {
     animation: none;
   }
 
+  .glass-nav.is-nav-transitioning .nav-chrome-item.is-nav-item-unfold-revealed,
   .glass-nav.is-nav-unfolding .nav-chrome-item.is-nav-item-unfold-revealed {
     visibility: visible;
     pointer-events: auto;
@@ -857,8 +872,19 @@ a:hover {
     animation-delay: 0s;
   }
 
-  .glass-nav.is-nav-expanded:not(.is-nav-unfolding):not(.is-nav-reveal-items):not(.is-nav-collapsing)
+  .glass-nav.is-nav-expanded:not(.is-nav-unfolding):not(.is-nav-reveal-items):not(.is-nav-collapsing):not(
+      .is-nav-transitioning
+    )
     .nav-chrome-item {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0) scale(1);
+    filter: blur(0);
+    animation: none;
+  }
+
+  .glass-nav.is-nav-transitioning
+    .nav-chrome-item:not(.is-nav-item-unfold-hidden):not(.is-nav-item-unfold-revealed) {
     opacity: 1;
     visibility: visible;
     transform: translateX(0) scale(1);

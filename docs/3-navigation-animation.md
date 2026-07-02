@@ -10,7 +10,7 @@ Desktop navigation (`GlassNav`, ≥768px) uses a scroll-driven collapse/unfold s
 | **Collapsed circle** | Left-aligned circular button with burger icon. Called “drop” in conversation, but **visually a perfect circle** — not a teardrop/blob shape |
 | **Shell** | The glass pill container (background, border-radius, width) independent of link content |
 | **Chrome** | Inner flex row containing nav items and the tab indicator |
-| **Unfold zone** | Top of page scroll range where scroll-up reverses collapse |
+| **Transition zone** | Scroll range between expanded and collapsed circle; drives both collapse and unfold |
 
 ## Layout
 
@@ -40,19 +40,17 @@ Burger button (mobile-only in drawer context) is hidden on desktop.
 ## State machine
 
 ```
-open ──scroll down──► hiding-items ──timer──► drop
-  ▲                        │                    │
-  │                        │                    │ scroll up (in unfold zone)
-  │                        │                    ▼
-  └──── scrollY ≤ 8 ─── unfolding ◄────────────┘
+open ◄──────────────────────────────────────────► drop
+  ▲          transition (scroll-anchored)            ▲
+  │ scrollY ≤ 8          8 … 328           scrollY ≥ 328 │
+  └────────────────────────────────────────────────────┘
 ```
 
 | Phase | Description |
 |-------|-------------|
-| `open` | Fully expanded, interactive |
-| `hiding-items` | Shell stays expanded; items hide right → left |
-| `drop` | Circle at left inset; burger face visible; chrome hidden |
-| `unfolding` | Scroll-up reverse; shell widens, then items appear left → right |
+| `open` | Fully expanded, interactive (`scrollY ≤ 8` or pinned) |
+| `transition` | In the 320px zone; progress driven purely by scroll position |
+| `drop` | Circle at left inset; burger face visible; chrome hidden (`scrollY ≥ 328`) |
 
 **Pinned expand:** clicking the collapsed circle sets `scrollPinned`, jumps to `open`, and runs a **time-based** item reveal (not scroll-driven).
 
@@ -60,16 +58,30 @@ open ──scroll down──► hiding-items ──timer──► drop
 
 | Constant | Value | Purpose |
 |----------|-------|---------|
-| `SCROLL_COLLAPSE_THRESHOLD` | 8px | At or above → eligible for collapse (unless pinned) |
-| `UNFOLD_ZONE_PX` | 320px | Scroll-up reverse only applies when `scrollY < 320` |
+| `SCROLL_COLLAPSE_THRESHOLD` | 8px | Top of transition zone |
+| `TRANSITION_ZONE_PX` | 320px | Length of scroll-anchored transition |
+| `TRANSITION_END` | 328px | `8 + 320`; fully collapsed below this |
 
 | Scroll mode | Condition |
 |-------------|-----------|
 | `expanded` | `scrollY ≤ 8` OR pinned |
-| `unfolding` | scrolling up AND `scrollY < 320` |
-| `drop` | otherwise (scrolled down past threshold) |
+| `transition` | `8 < scrollY < 328` |
+| `drop` | `scrollY ≥ 328` |
 
 Scrolling down clears pin when `scrollY > 8`.
+
+### Transition progress
+
+```
+transitionProgress = clamp((scrollY - 8) / 320, 0, 1)
+```
+
+| `transitionProgress` | Meaning |
+|----------------------|---------|
+| `0` | Fully expanded |
+| `0 → 0.5` | Items hide (collapse) or reappear (unfold) |
+| `0.5 → 1` | Shell morphs to/from circle |
+| `1` | Fully collapsed circle |
 
 ## Timing constants
 
@@ -81,45 +93,53 @@ Scrolling down clears pin when `scrollY > 8`.
 | `NAV_UNFOLD_ANIM_MULTIPLIER` | 4 |
 | `--nav-unfold-phase-duration` | `0.82s × 4` = 3.28s per item pop on scroll-unfold |
 
-Collapse item stagger delay for index `i`: `(8 - i) × 0.065s` (rightmost first).
-
 Click-expand item stagger delay for index `i`: `i × 0.065s` (leftmost first), plus shell gap when expanding from circle click.
 
-## Collapse sequence (scroll down)
+## Milestone: scroll-anchored collapse (scroll down)
 
-1. **`open` → `hiding-items`** — shell remains full width and **full height**
-2. Items animate out **right → left** (`nav-item-hide`, staggered)
-3. After `(N - 1) × stagger + phase-duration` (~1.4s), **`drop`**
-4. Shell morphs to **circle** at left inset; burger icon fades in
+**Requirement:** No timer gap between “all items gone” and circle morph. Items hide at scroll anchors; circle conversion starts only after the **last** item anchor (Home, index `0`).
+
+### Phase A — Item hide (`transitionProgress` 0 → 0.5, scroll 8px → 168px)
+
+- Shell stays full width and **full height**
+- `itemHideProgress = min(1, transitionProgress × 2)`
+- Item `i` hidden when:
+
+```
+itemHideProgress >= (9 - i) / 9
+```
+
+| Index | Hides at progress | Scroll Y (approx.) |
+|-------|-------------------|--------------------|
+| 8 Calendar | ≥ 1/9 | 43px |
+| 7 Email | ≥ 2/9 | 79px |
+| … | … | … |
+| 0 Home | ≥ 9/9 = 1.0 | 168px (last anchor) |
+
+Order: **right → left**. Scroll provides stagger — not CSS `animation-delay`, not a post-hide timer.
+
+### Phase B — Shell to circle (`transitionProgress` 0.5 → 1, scroll 168px → 328px)
+
+- Starts only after last item anchor (`transitionProgress ≥ 0.5`)
+- `shellCollapseProgress = max(0, transitionProgress × 2 - 1)`
+- Width: `50vw` → circle diameter; position: centered → left inset
+- Height fixed at `--nav-shell-height`; border-radius: pill → `50%`
+- Chrome hidden; burger appears at `transitionProgress = 1`
 
 ## Unfold sequence (scroll up)
 
-Unfold progress: `1 - scrollY / 320` (0 at bottom of zone, 1 at top).
+Same `transitionProgress` formula — scrolling up **decreases** progress (symmetric reverse).
 
-Split into two halves:
+### Phase A — Shell widen (`transitionProgress` 1 → 0.5)
 
-### Phase A — Shell widen (progress 0 → 0.5, scroll 320px → 160px)
+- Circle morphs back to full-width pill (`shellExpandProgress = 1 - shellCollapseProgress`)
+- Items remain hidden until progress drops below `0.5`
 
-- Width interpolates: circle diameter → `50vw`
-- Position interpolates: left inset → centered
-- **Height fixed** at measured expanded height (`--nav-shell-height`)
-- **Padding fixed** at `0.5rem 1.1rem` (no thin-line shrink)
-- Border-radius: `50%` → pill (`9999px` interpolated)
-- Chrome visible but **all items hidden**
+### Phase B — Item reveal (`transitionProgress` 0.5 → 0)
 
-### Phase B — Item reveal (progress 0.5 → 1.0, scroll 160px → 0px)
-
-`linkProgress = max(0, unfoldProgress × 2 - 1)`
-
-Item `i` reveals when:
-
-```
-linkProgress >= i / 9
-```
-
-Each item runs `nav-item-show` over `--nav-unfold-phase-duration` (3.28s). **Scroll position provides stagger** — not CSS `animation-delay`. Items pop one-by-one from left.
-
-Reversing scroll within the zone hides items again in reverse order.
+- `linkRevealProgress = max(0, 1 - transitionProgress × 2)`
+- Item `i` reveals when `linkRevealProgress >= i / 9`
+- Each pop uses `--nav-unfold-phase-duration` (3.28s); scroll provides stagger left → right
 
 ## Collapsed circle geometry
 
@@ -146,8 +166,8 @@ The bar must **never** compress vertically into a thin line during unfold.
 - Sliding orange pill behind active route (Home, text tabs, Calendar)
 - Position measured relative to `.glass-nav-chrome` (not outer nav — avoids padding offset)
 - Uses layout coordinates (`offsetLeft` / `offsetTop`), not transform-aware `getBoundingClientRect()`, so unfold keyframes do not skew the pill
-- Hidden during `drop`, `hiding-items`, shell-only unfold, and until the **active** item’s scroll-reveal threshold is met
-- Shown once the active item is revealed during scroll-unfold
+- Hidden during `drop`, shell morph (`transitionProgress ≥ 0.5`), and until the **active** item’s scroll anchor is visible
+- Shown once the active item is past its hide/reveal threshold
 
 ## Click expand from circle
 
@@ -161,12 +181,12 @@ The bar must **never** compress vertically into a thin line during unfold.
 
 | Class | Applied when |
 |-------|----------------|
-| `is-nav-drop` | Phase `drop` |
-| `is-nav-collapsing` | Phase `hiding-items` |
-| `is-nav-unfolding` | Phase `unfolding` or scroll mode `unfolding` |
-| `is-nav-expanded` | Fully expanded shell (not during scroll-unfold) |
-| `is-nav-item-unfold-hidden` | Scroll-unfold: item not yet reached |
-| `is-nav-item-unfold-revealed` | Scroll-unfold: item threshold crossed |
+| `is-nav-drop` | `transitionProgress ≥ 1` |
+| `is-nav-transitioning` | `0 < transitionProgress < 0.5` (item hide/reveal half) |
+| `is-nav-unfolding` | `0.5 < transitionProgress < 1` (shell morph half) |
+| `is-nav-expanded` | Full-width shell (`progress ≤ 0.5` or pinned) |
+| `is-nav-item-unfold-hidden` | Item past hide threshold or not yet revealed |
+| `is-nav-item-unfold-revealed` | Item reveal pop (unfold second half) |
 | `is-nav-reveal-items` | Click-expand item animation |
 | `is-nav-reveal-after-shell` | Click-expand: wait for shell before items |
 
@@ -184,6 +204,22 @@ The bar must **never** compress vertically into a thin line during unfold.
 **`nav-item-show`** (unfold / click-expand): opacity 0 → 1, translateX(-14px) → 0, scale up, blur clear.
 
 ## Bugs and problems
+
+### All items hiding at once during scroll collapse (fixed)
+
+**Symptom:** Every nav item vanished together instead of one-by-one at scroll anchors.
+
+**Root cause:** During `is-nav-transitioning`, the nav also had `is-nav-expanded`. This rule forced **all** `.nav-chrome-item` elements to `opacity: 1`, overriding per-item `is-nav-item-unfold-hidden`.
+
+**Fix:** Exclude `is-nav-transitioning` from the expanded “all items visible” rule; style visible/hidden items separately during the item phase.
+
+### Timer gap before circle morph on collapse (fixed)
+
+**Symptom:** Noticeable delay between all nav items disappearing and the bar becoming a circle when scrolling down.
+
+**Root cause:** Collapse used a time-based `hiding-items` phase (`nav-item-hide` animation + `setTimeout` ~1.4s) before entering `drop`. Scroll position was ignored during item hide.
+
+**Fix:** Unified scroll-anchored `transitionProgress` over 320px. Items hide at per-index anchors in the first half; shell morphs only after `transitionProgress ≥ 0.5` (last anchor = Home). Removed collapse timer.
 
 ### Active tab indicator offset after scroll-unfold (fixed)
 
@@ -208,7 +244,7 @@ A previous margin-expansion hack (`marginLeft` subtracted from `left`) also pull
 ## Future development notes
 
 - All nav animation changes should be validated against this spec
-- Prefer scroll-driven thresholds for unfold; reserve time-based stagger for click-expand only
+- Prefer scroll-driven thresholds for collapse and unfold; reserve time-based stagger for click-expand only
 - Do not reintroduce organic/blob border-radius on collapsed state
 - Keep shell height constant across collapse → circle → unfold → expanded
 - Test: slow scroll through 320px zone, fast flick scroll, click-expand while scrolled, resize during animation, `prefers-reduced-motion`
