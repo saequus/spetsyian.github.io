@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import {
   useCallback,
   useEffect,
@@ -8,6 +9,7 @@ import {
 } from 'react'
 import { Github, Instagram, Linkedin, PanelBottom } from 'lucide-react'
 import {
+  CHROME_EXPAND_THRESHOLD,
   CHROME_UNFOLD_ANIM_MULTIPLIER,
   DROP_SIZE_PX,
   getChromeItemTransitionClass,
@@ -17,6 +19,16 @@ import {
 
 const EMAIL = 'slava@spetsyian.com'
 const FOOTER_CHROME_ITEM_COUNT = 4
+const FOOTER_ITEM_STAGGER_S = 0.065
+const FOOTER_REVEAL_MS = 2400
+
+function footerChromeItemStyle(index: number): CSSProperties {
+  const expandDelay = index * FOOTER_ITEM_STAGGER_S
+
+  return {
+    ['--nav-expand-delay' as string]: `${expandDelay}s`,
+  } as CSSProperties
+}
 
 type GlassFooterProps = {
   /** When false, footer stays fully expanded on scroll (desktop). */
@@ -34,11 +46,15 @@ function getDistanceFromBottom(scrollY: number) {
 export default function GlassFooter({
   scrollNavCollapse = true,
 }: GlassFooterProps) {
+  const router = useRouter()
   const footerRef = useRef<HTMLElement>(null)
   const [scrollY, setScrollY] = useState(0)
+  const [scrollPinned, setScrollPinned] = useState(false)
+  const [revealLinks, setRevealLinks] = useState(false)
   const [desktopFooter, setDesktopFooter] = useState(false)
   const [footerShellHeightPx, setFooterShellHeightPx] = useState(DROP_SIZE_PX)
   const [maxScrollY, setMaxScrollY] = useState(0)
+  const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const collapseActive = scrollNavCollapse && desktopFooter
   const distanceFromBottom = useMemo(() => {
@@ -47,26 +63,32 @@ export default function GlassFooter({
   }, [collapseActive, scrollY])
 
   const transitionProgress = collapseActive
-    ? getChromeTransitionProgress(distanceFromBottom, false)
+    ? getChromeTransitionProgress(distanceFromBottom, scrollPinned)
     : 0
   const { shellExpandProgress, linkRevealProgress } =
     getChromeTransitionDerived(transitionProgress)
-  const isShellDrop = transitionProgress >= 1
+  const isShellDrop = transitionProgress >= 1 && !scrollPinned
   const isFooterTransitioning =
-    transitionProgress > 0 && transitionProgress < 1
-  const isShellMorphing = transitionProgress > 0.5 && transitionProgress < 1
+    transitionProgress > 0 && transitionProgress < 1 && !scrollPinned
+  const isShellMorphing =
+    transitionProgress > 0.5 && transitionProgress < 1 && !scrollPinned
   const isFooterExpandedShell =
-    !isShellDrop && !isShellMorphing && transitionProgress <= 0.5
+    !isShellDrop &&
+    !isShellMorphing &&
+    (transitionProgress === 0 || scrollPinned || transitionProgress <= 0.5)
+  const isClickRevealingItems = revealLinks && !isShellDrop && !scrollPinned
 
   const getFooterItemClass = useCallback(
-    (index: number) =>
-      getChromeItemTransitionClass(
+    (index: number) => {
+      if (!collapseActive || scrollPinned) return ''
+      return getChromeItemTransitionClass(
         index,
         FOOTER_CHROME_ITEM_COUNT,
         transitionProgress,
         collapseActive
-      ),
-    [collapseActive, transitionProgress]
+      )
+    },
+    [collapseActive, scrollPinned, transitionProgress]
   )
 
   const shellMetricsStyle = useMemo(() => {
@@ -87,12 +109,12 @@ export default function GlassFooter({
     const expandedWidth = viewport * 0.5
     const expandedLeft = (viewport - expandedWidth) / 2
     const dropInset = Math.max(
-      220,
+      0,
       Number.parseFloat(
         getComputedStyle(document.documentElement).getPropertyValue(
-          '--layout-inset-right'
+          '--chrome-drop-inset-right'
         )
-      ) || 220
+      ) || 0
     )
     const dropSize = footerShellHeightPx
     const dropLeft = viewport - dropSize - dropInset
@@ -157,6 +179,29 @@ export default function GlassFooter({
     shellMetricsStyle,
   ])
 
+  const expandFromDrop = useCallback(() => {
+    setScrollPinned(true)
+    setRevealLinks(true)
+    if (revealTimerRef.current) {
+      clearTimeout(revealTimerRef.current)
+    }
+    revealTimerRef.current = setTimeout(() => {
+      setRevealLinks(false)
+      revealTimerRef.current = null
+    }, FOOTER_REVEAL_MS)
+  }, [])
+
+  useEffect(() => {
+    setScrollPinned(false)
+    setRevealLinks(false)
+  }, [router.pathname])
+
+  useEffect(() => {
+    if (isShellDrop) {
+      setRevealLinks(false)
+    }
+  }, [isShellDrop])
+
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 768px)')
     const sync = () => setDesktopFooter(mq.matches)
@@ -166,11 +211,24 @@ export default function GlassFooter({
   }, [])
 
   useEffect(() => {
+    if (!desktopFooter) {
+      setScrollPinned(false)
+    }
+  }, [desktopFooter])
+
+  useEffect(() => {
     const syncScroll = () => {
       const y = window.scrollY
       setScrollY(y)
       const doc = document.documentElement
       setMaxScrollY(Math.max(0, doc.scrollHeight - window.innerHeight))
+
+      if (
+        scrollNavCollapse &&
+        getDistanceFromBottom(y) > CHROME_EXPAND_THRESHOLD
+      ) {
+        setScrollPinned(false)
+      }
     }
 
     syncScroll()
@@ -180,25 +238,48 @@ export default function GlassFooter({
       window.removeEventListener('scroll', syncScroll)
       window.removeEventListener('resize', syncScroll)
     }
-  }, [])
+  }, [scrollNavCollapse])
 
   useEffect(() => {
     const footerEl = footerRef.current
-    if (!footerEl || !desktopFooter) return
+    if (!footerEl || !desktopFooter || !collapseActive) return
 
     const measure = () => {
-      if (transitionProgress >= 1) return
+      if (isShellDrop || isShellMorphing || isFooterTransitioning) return
+      if (transitionProgress > 0 && !scrollPinned) return
+
       const height = Math.round(footerEl.getBoundingClientRect().height)
-      if (height > 0) {
+      if (height > 0 && height <= 120) {
         setFooterShellHeightPx((prev) => (prev === height ? prev : height))
       }
     }
 
-    measure()
-    const observer = new ResizeObserver(measure)
+    const frame = requestAnimationFrame(measure)
+    const observer = new ResizeObserver(() => {
+      requestAnimationFrame(measure)
+    })
     observer.observe(footerEl)
-    return () => observer.disconnect()
-  }, [desktopFooter, transitionProgress])
+    return () => {
+      cancelAnimationFrame(frame)
+      observer.disconnect()
+    }
+  }, [
+    desktopFooter,
+    collapseActive,
+    isShellDrop,
+    isShellMorphing,
+    isFooterTransitioning,
+    transitionProgress,
+    scrollPinned,
+  ])
+
+  useEffect(() => {
+    return () => {
+      if (revealTimerRef.current) {
+        clearTimeout(revealTimerRef.current)
+      }
+    }
+  }, [])
 
   const footerWrapClassName = [
     'glass-footer-wrap',
@@ -219,6 +300,8 @@ export default function GlassFooter({
       : '',
     desktopFooter && isShellMorphing ? 'is-footer-unfolding' : '',
     desktopFooter && isFooterExpandedShell ? 'is-footer-expanded' : '',
+    desktopFooter && isClickRevealingItems ? 'is-footer-reveal-items' : '',
+    desktopFooter && isClickRevealingItems ? 'is-footer-reveal-after-shell' : '',
   ]
     .filter(Boolean)
     .join(' ')
@@ -233,16 +316,20 @@ export default function GlassFooter({
         style={footerStyle}
         aria-label="Social and contact"
       >
-        <span
+        <button
+          type="button"
           className="glass-footer-drop-face"
+          aria-label="Open footer"
           aria-hidden={!isShellDrop && !shortPageExpanded}
+          tabIndex={isShellDrop ? 0 : -1}
+          onClick={expandFromDrop}
         >
           <PanelBottom
             className="glass-icon glass-footer-drop-icon"
             size={22}
             strokeWidth={1.75}
           />
-        </span>
+        </button>
 
         <div
           className="glass-footer-chrome"
@@ -252,6 +339,7 @@ export default function GlassFooter({
             <a
               href="https://www.linkedin.com/in/spetsyian/"
               className={`nav-icon-link footer-chrome-item${getFooterItemClass(0) ? ` ${getFooterItemClass(0)}` : ''}`}
+              style={footerChromeItemStyle(0)}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
@@ -261,6 +349,7 @@ export default function GlassFooter({
             <a
               href="https://www.instagram.com/saequus/"
               className={`nav-icon-link footer-chrome-item${getFooterItemClass(1) ? ` ${getFooterItemClass(1)}` : ''}`}
+              style={footerChromeItemStyle(1)}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
@@ -270,6 +359,7 @@ export default function GlassFooter({
             <a
               href="https://github.com/saequus"
               className={`nav-icon-link footer-chrome-item${getFooterItemClass(2) ? ` ${getFooterItemClass(2)}` : ''}`}
+              style={footerChromeItemStyle(2)}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub"
@@ -280,6 +370,7 @@ export default function GlassFooter({
           <a
             href={`mailto:${EMAIL}`}
             className={`glass-footer-email glass-label footer-chrome-item${getFooterItemClass(3) ? ` ${getFooterItemClass(3)}` : ''}`}
+            style={footerChromeItemStyle(3)}
           >
             {EMAIL}
           </a>

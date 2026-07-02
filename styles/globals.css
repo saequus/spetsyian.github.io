@@ -48,6 +48,16 @@ html {
   );
   --nav-shell-height: 3.375rem;
   --nav-item-count: 9;
+  /* Collapsed chrome circles sit outside the text column (inset − outset) */
+  --chrome-drop-outset: 85px;
+  --chrome-drop-inset-left: max(
+    0px,
+    calc(var(--layout-inset) - var(--chrome-drop-outset))
+  );
+  --chrome-drop-inset-right: max(
+    0px,
+    calc(var(--layout-inset-right) - var(--chrome-drop-outset))
+  );
   --nav-phase-gap: calc(
     (var(--nav-item-count) - 1) * var(--nav-item-stagger) + var(--nav-phase-duration)
   );
@@ -179,7 +189,12 @@ a:hover {
   margin-right: 0;
 }
 
-/* Booking page: use full width inside content-layer padding (desktop + mobile) */
+/* Booking page: tighter side margins so the calendar grid fits */
+.content-layer.content-booking {
+  padding-left: max(40px, env(safe-area-inset-left, 0px));
+  padding-right: max(40px, env(safe-area-inset-right, 0px));
+}
+
 .content-booking {
   width: 100%;
   max-width: 100%;
@@ -318,7 +333,6 @@ a:hover {
   font-size: 1.08rem;
   line-height: 1.65;
   color: rgba(242, 232, 210, 0.85);
-  max-width: 42ch;
   margin: 0 0 1rem;
   text-align: left;
 }
@@ -512,7 +526,7 @@ a:hover {
   }
 
   .glass-nav-wrap.is-nav-drop {
-    left: var(--layout-inset);
+    left: var(--chrome-drop-inset-left);
     right: auto;
     transform: none;
     width: var(--nav-shell-height, 3.375rem);
@@ -528,7 +542,7 @@ a:hover {
   }
 
   .glass-nav-wrap.is-nav-unfolding {
-    left: var(--nav-unfold-left, var(--layout-inset));
+    left: var(--nav-unfold-left, var(--chrome-drop-inset-left));
     right: auto;
     transform: none;
     width: var(--nav-unfold-width, var(--nav-shell-height, 3.375rem));
@@ -1339,7 +1353,7 @@ a:hover {
 
   .glass-footer-wrap.is-footer-drop {
     left: auto;
-    right: var(--layout-inset-right);
+    right: var(--chrome-drop-inset-right);
     transform: none;
     width: var(--footer-shell-height, 3.375rem);
     transition-delay: 0s;
@@ -1383,8 +1397,7 @@ a:hover {
     transition:
       border-radius var(--nav-phase-duration) cubic-bezier(0.22, 1, 0.36, 1),
       padding var(--nav-phase-duration) cubic-bezier(0.22, 1, 0.36, 1),
-      width var(--nav-phase-duration) cubic-bezier(0.22, 1, 0.36, 1),
-      height var(--nav-phase-duration) cubic-bezier(0.22, 1, 0.36, 1);
+      width var(--nav-phase-duration) cubic-bezier(0.22, 1, 0.36, 1);
     transition-delay: 0s;
   }
 
@@ -1401,7 +1414,7 @@ a:hover {
   .glass-footer.is-footer-expanded {
     width: 100%;
     height: auto;
-    min-height: var(--footer-shell-height, 3.375rem);
+    min-height: 0;
     border-radius: 9999px;
     overflow: visible;
     transition-delay: 0s;
@@ -1424,10 +1437,16 @@ a:hover {
   inset: 0;
   align-items: center;
   justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
   color: rgba(255, 248, 235, 0.96);
+  cursor: pointer;
   z-index: 3;
   opacity: 0;
   pointer-events: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .glass-footer-drop-icon {
@@ -1438,13 +1457,45 @@ a:hover {
   .glass-footer.is-footer-drop .glass-footer-drop-face {
     display: inline-flex;
     opacity: 1;
-    pointer-events: none;
+    pointer-events: auto;
+    transition-delay: var(--nav-phase-duration);
   }
 
-  .glass-footer.is-footer-unfolding .glass-footer-drop-face,
-  .glass-footer.is-footer-expanded .glass-footer-drop-face {
+  .glass-footer.is-footer-transitioning .glass-footer-drop-face,
+  .glass-footer.is-footer-expanded .glass-footer-drop-face,
+  .glass-footer.is-footer-unfolding .glass-footer-drop-face {
     display: none;
     opacity: 0;
+    pointer-events: none;
+    transition-delay: 0s;
+  }
+
+  .glass-footer.is-footer-drop {
+    cursor: pointer;
+  }
+
+  .glass-footer.is-footer-expanded:not(.is-footer-unfolding):not(.is-footer-reveal-items):not(
+      .is-footer-transitioning
+    )
+    .footer-chrome-item {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0) scale(1);
+    filter: blur(0);
+    animation: none;
+  }
+
+  .glass-footer.is-footer-reveal-items .footer-chrome-item {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-14px) scale(0.94);
+    filter: blur(2px);
+    animation: nav-item-show var(--nav-phase-duration) cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--nav-expand-delay, 0s);
+  }
+
+  .glass-footer.is-footer-reveal-items.is-footer-reveal-after-shell .footer-chrome-item {
+    animation-delay: calc(var(--nav-phase-gap) + var(--nav-expand-delay, 0s));
   }
 }
 

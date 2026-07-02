@@ -48,6 +48,10 @@ export default function Home() {
             Leading platform engineering. Currently shaping{' '}
             <a href={salesAmplifier.href} target="_blank" rel="noopener noreferrer">
               {salesAmplifier.name}
+            </a>{' '}
+            and building at{' '}
+            <a href={SERPENTARIA.href} target="_blank" rel="noopener noreferrer">
+              Serpentaria Capital
             </a>
             . Previously at{' '}
             <a

@@ -7,7 +7,7 @@ Desktop navigation (`GlassNav`) and footer (`GlassFooter`, ≥768px) share a scr
 | Term | Meaning |
 |------|---------|
 | **Expanded** | Full-width pill (50vw, centered), all chrome items visible |
-| **Collapsed circle** | Compact circle (“drop”). Nav: **left** inset + burger. Footer: **right** inset + footer icon |
+| **Collapsed circle** | Compact circle (“drop”). Nav: **left** of text column + burger. Footer: **right** of text column + footer icon |
 | **Shell** | Glass container (background, border-radius, width) independent of inner content |
 | **Chrome** | Inner row of links/icons |
 | **Transition zone** | Scroll range where progress moves between expanded and circle |
@@ -16,15 +16,26 @@ Desktop navigation (`GlassNav`) and footer (`GlassFooter`, ≥768px) share a scr
 
 | Chrome | Expanded | Collapsed circle |
 |--------|------------|------------------|
-| Nav | `50vw` centered | `50%` circle at `left: var(--layout-inset)` |
-| Footer | `50vw` centered | `50%` circle at `right: var(--layout-inset-right)` |
+| Nav | `50vw` centered | Perfect circle at `left: var(--chrome-drop-inset-left)` |
+| Footer | `50vw` centered | Perfect circle at `right: var(--chrome-drop-inset-right)` |
 
-Site content uses 220px side insets (`--layout-inset` / `--layout-inset-right`).
+### Text column vs drop position
+
+Page text uses `--layout-inset` / `--layout-inset-right` (220px minimum on desktop). Collapsed nav and footer circles sit **outside** the text column — slightly closer to the viewport edge:
+
+```
+--chrome-drop-outset: 85px
+--chrome-drop-inset-left:  max(0, var(--layout-inset) - 85px)      → 135px when inset is 220px
+--chrome-drop-inset-right: max(0, var(--layout-inset-right) - 85px) → 135px when inset is 220px
+```
+
+Shell morph (unfold/collapse) interpolates between the drop position and the centered 50vw expanded pill. JS reads the same CSS variables for `--nav-unfold-left` / `--footer-unfold-left`.
 
 ## Shared constants
 
 | Constant | Value |
 |----------|-------|
+| `--chrome-drop-outset` | 85px (drop circles sit outside text column) |
 | `CHROME_EXPAND_THRESHOLD` | 8px |
 | `CHROME_TRANSITION_ZONE_PX` | 320px |
 | `CHROME_TRANSITION_END` | 328px (`8 + 320`) |
@@ -57,10 +68,18 @@ transitionProgress = clamp((scrollY - 8) / 320, 0, 1)
 Item `i` hides when `itemHideProgress >= (9 - i) / 9`.  
 Item `i` reveals when `linkRevealProgress >= i / 9`.
 
+### Click-to-expand (nav + footer)
+
+Both chrome circles support click-to-expand while collapsed:
+
+- Sets `scrollPinned` → forces `transitionProgress = 0` (fully expanded shell)
+- Shell animates from drop position to centered 50vw pill via CSS transition
+- Pin clears when the user scrolls away from the anchor edge (nav: `scrollY > 8px`; footer: `distanceFromBottom > 8px`)
+- Pin also clears on route change
+
 ### Nav-only features
 
 - Sliding active-tab indicator
-- Click circle → pinned expand (`scrollPinned`) with time-based item reveal
 - Burger icon in collapsed circle
 
 ## Footer (bottom-anchored)
@@ -100,7 +119,8 @@ Expand (scrolling to bottom): shell widens first, then items pop **left → righ
 
 - Circle: `border-radius: 50%`, diameter `--footer-shell-height`
 - Shell height fixed during morph (measured via `ResizeObserver`)
-- Mail icon shown in collapsed circle (decorative; links live in expanded chrome)
+- `PanelBottom` footer icon in collapsed circle (decorative; links live in expanded chrome)
+- Click circle → pinned expand (same `scrollPinned` behavior as nav)
 
 ### Short pages
 
