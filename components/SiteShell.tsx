@@ -3,6 +3,7 @@ import Head from 'next/head'
 import type { ReactNode } from 'react'
 import GlassFooter from './GlassFooter'
 import GlassNav from './GlassNav'
+import PageEnter from './PageEnter'
 
 const VideoBackground = dynamic(() => import('./VideoBackground'), {
   ssr: false,
@@ -37,7 +38,9 @@ export default function SiteShell({
       <div className="page-root">
         <VideoBackground />
         <GlassNav />
-        <main className={`content-layer ${contentClassName}`}>{children}</main>
+        <main className={`content-layer ${contentClassName}`}>
+          <PageEnter>{children}</PageEnter>
+        </main>
         <GlassFooter />
       </div>
     </>

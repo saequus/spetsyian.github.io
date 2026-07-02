@@ -249,51 +249,14 @@ a:hover {
   margin-bottom: 2.25rem;
 }
 
-.hero-orb {
-  position: relative;
-  width: 112px;
-  height: 112px;
-  border-radius: 32px;
-  background: linear-gradient(175deg, #1f1c1a 8%, #0f0e0d 42%, #2a211c 100%);
+.hero-avatar {
+  display: block;
+  width: min(260px, 100%);
+  height: auto;
+  border-radius: 1.25rem;
   box-shadow:
-    inset 0 2px 3px rgba(255, 255, 255, 0.25),
-    0 30px 80px rgba(0, 0, 0, 0.65),
+    0 20px 50px rgba(0, 0, 0, 0.55),
     0 0 0 1px rgba(255, 109, 41, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.hero-orb .orb-glow {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    175deg,
-    transparent 35%,
-    rgba(255, 109, 41, 0.35) 62%,
-    rgba(255, 109, 41, 0.65) 82%,
-    rgba(255, 109, 41, 0.35) 100%
-  );
-  mix-blend-mode: screen;
-  animation: orb-breath 7s ease-in-out infinite;
-}
-
-@keyframes orb-breath {
-  0%, 100% { opacity: 0.85; }
-  50% { opacity: 1; }
-}
-
-.hero-orb .orb-initials {
-  position: relative;
-  font-family: var(--font-display), system-ui, sans-serif;
-  font-size: 2.1rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: #f8f0d8;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.6);
-  z-index: 2;
 }
 
 .hero-subtitle {
@@ -313,14 +276,26 @@ a:hover {
   .hero-glass {
     padding: 2rem 0.75rem 1.25rem;
   }
-  .hero-orb {
-    width: 92px;
-    height: 92px;
-    border-radius: 26px;
+  .hero-avatar {
+    border-radius: 1rem;
   }
-  .hero-orb .orb-initials {
-    font-size: 1.7rem;
+}
+
+/* ─── Page entrance animations ─────────────────────────────────────────────── */
+@keyframes page-rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter-item {
+  animation: page-rise 1.15s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--enter-delay, 0ms);
 }
 
 .glass-statement {
@@ -328,7 +303,8 @@ a:hover {
   line-height: 1.65;
   color: rgba(242, 232, 210, 0.85);
   max-width: 42ch;
-  margin: 0 auto 1rem;
+  margin: 0 0 1rem;
+  text-align: left;
 }
 
 .final-cta {
@@ -693,6 +669,29 @@ a:hover {
   }
 }
 
+.glass-nav-tabs {
+  position: relative;
+}
+
+.glass-nav-tab-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 9999px;
+  background: rgba(var(--tint-orange-rgb), 0.2);
+  box-shadow:
+    0 0 0 1px rgba(var(--tint-orange-rgb), 0.32),
+    0 6px 22px rgba(var(--tint-orange-rgb), 0.14);
+  pointer-events: none;
+  z-index: 0;
+  transition:
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.5s ease;
+  will-change: transform, width;
+}
+
 .glass-nav-burger {
   display: inline-flex;
 }
@@ -784,6 +783,12 @@ a:hover {
   color: #faf6e8;
 }
 
+.glass-nav-drawer-link.is-active {
+  background: rgba(var(--tint-orange-rgb), 0.18);
+  color: #fff8eb;
+  font-weight: 600;
+}
+
 .glass-nav-drawer-rowlink {
   display: flex;
   align-items: center;
@@ -868,9 +873,21 @@ a:hover {
   .glass-nav-drawer {
     transition: none;
   }
+
+  .glass-nav-tab-indicator {
+    transition: none;
+  }
+
+  .page-enter-item {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .glass-nav a.nav-text {
+  position: relative;
+  z-index: 1;
   text-decoration: none;
   font-size: 0.8125rem;
   font-weight: 500;
@@ -879,12 +896,16 @@ a:hover {
   border-radius: 9999px;
   color: var(--text-cream-soft);
   text-shadow: 0 1px 2px rgba(9, 7, 29, 0.45);
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: color 0.55s ease;
 }
 
 .glass-nav a.nav-text:hover {
-  background: rgba(var(--tint-orange-rgb), 0.108);
   color: #faf6e8;
+}
+
+.glass-nav a.nav-text.is-active {
+  color: #fff8eb;
+  font-weight: 600;
 }
 
 .glass-nav .nav-divider {
@@ -1039,15 +1060,10 @@ a:hover {
   display: inline-flex;
   flex-direction: column;
   align-items: stretch;
-  min-width: 0;
+  min-width: 16.5rem;
   max-width: calc(100vw - 1.25rem);
-  padding: 0.75rem 0.85rem;
-  border-radius: 0.75rem;
-  background: rgba(14, 14, 16, 0.85);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  padding: 0.85rem 0.95rem;
+  border-radius: 1.25rem;
   pointer-events: auto;
   gap: 0.5rem;
 }

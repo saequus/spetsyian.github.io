@@ -1,17 +1,30 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Calendar, Copy, Github, Home, Mail, Menu, X } from 'lucide-react'
 
 const EMAIL_PRIMARY = 'slava@spetsyian.com'
 const EMAIL_ALT = 'slavaspetsyian@gmail.com'
 
 const MENU_LINKS = [
-  { href: '/links/', label: 'Favorite Links' },
-  { href: '/work/', label: 'Work' },
-  { href: '/projects/', label: 'Projects' },
-  { href: 'https://t.me/spetsyian#', label: 'Blog' },
+  { href: '/links/', label: 'Favorite Links', external: false },
+  { href: '/work/', label: 'Work', external: false },
+  { href: '/projects/', label: 'Projects', external: false },
+  { href: 'https://t.me/spetsyian#', label: 'Blog', external: true },
 ] as const
+
+type TabIndicator = {
+  left: number
+  width: number
+  visible: boolean
+}
+
+function isTabActive(href: string, pathname: string) {
+  const tabPath = href.replace(/\/$/, '') || '/'
+  const current = pathname.replace(/\/$/, '') || '/'
+  if (tabPath === '/') return current === '/'
+  return current === tabPath || current.startsWith(`${tabPath}/`)
+}
 
 export default function GlassNav() {
   const router = useRouter()
@@ -21,9 +34,41 @@ export default function GlassNav() {
   const [drawerCopied, setDrawerCopied] = useState<string | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const anchorRef = useRef<HTMLDivElement>(null)
+  const tabsRef = useRef<HTMLDivElement>(null)
+  const tabRefs = useRef<Map<string, HTMLElement>>(new Map())
   const drawerCopyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [tabIndicator, setTabIndicator] = useState<TabIndicator>({
+    left: 0,
+    width: 0,
+    visible: false,
+  })
 
   const showPopover = open || hovering
+
+  const updateTabIndicator = useCallback(() => {
+    const container = tabsRef.current
+    if (!container) return
+
+    const activeTab = MENU_LINKS.find(
+      (item) => !item.external && isTabActive(item.href, router.pathname)
+    )
+    if (!activeTab) {
+      setTabIndicator((prev) => ({ ...prev, visible: false }))
+      return
+    }
+
+    const tabEl = tabRefs.current.get(activeTab.href)
+    if (!tabEl) return
+
+    const containerRect = container.getBoundingClientRect()
+    const tabRect = tabEl.getBoundingClientRect()
+
+    setTabIndicator({
+      left: tabRect.left - containerRect.left,
+      width: tabRect.width,
+      visible: true,
+    })
+  }, [router.pathname])
 
   const copyEmail = useCallback(async (address: string) => {
     try {
@@ -54,6 +99,15 @@ export default function GlassNav() {
   useEffect(() => {
     setMenuOpen(false)
   }, [router.pathname])
+
+  useLayoutEffect(() => {
+    updateTabIndicator()
+  }, [updateTabIndicator])
+
+  useEffect(() => {
+    window.addEventListener('resize', updateTabIndicator)
+    return () => window.removeEventListener('resize', updateTabIndicator)
+  }, [updateTabIndicator])
 
   useEffect(() => {
     if (!open) return
@@ -164,24 +218,48 @@ export default function GlassNav() {
           <Link href="/" className="nav-icon-link" aria-label="Home">
             <Home className="glass-icon" size={20} strokeWidth={1.75} />
           </Link>
-          <div className="glass-nav-desktop-inline">
-            <Link href="/links/" className="nav-text glass-label">
-              Favorite Links
-            </Link>
-            <Link href="/work/" className="nav-text glass-label">
-              Work
-            </Link>
-            <Link href="/projects/" className="nav-text glass-label">
-              Projects
-            </Link>
-            <a
-              href="https://t.me/spetsyian#"
-              className="nav-text glass-label"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Blog
-            </a>
+          <div className="glass-nav-desktop-inline glass-nav-tabs" ref={tabsRef}>
+            <span
+              className="glass-nav-tab-indicator"
+              aria-hidden
+              style={{
+                transform: `translateX(${tabIndicator.left}px)`,
+                width: tabIndicator.visible ? tabIndicator.width : 0,
+                opacity: tabIndicator.visible ? 1 : 0,
+              }}
+            />
+            {MENU_LINKS.map((item) => {
+              const active = !item.external && isTabActive(item.href, router.pathname)
+              const className = `nav-text glass-label${active ? ' is-active' : ''}`
+
+              if (item.external) {
+                return (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    className={className}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {item.label}
+                  </a>
+                )
+              }
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={className}
+                  ref={(el) => {
+                    if (el) tabRefs.current.set(item.href, el)
+                    else tabRefs.current.delete(item.href)
+                  }}
+                >
+                  {item.label}
+                </Link>
+              )
+            })}
             <span className="nav-divider" aria-hidden />
           </div>
         </div>
@@ -218,7 +296,7 @@ export default function GlassNav() {
             </button>
             {showPopover ? (
               <div
-                className="email-popover"
+                className="email-popover liquid-glass liquid-glass--tint"
                 role="dialog"
                 aria-label="Email addresses"
                 onMouseEnter={() => setHovering(true)}
@@ -291,29 +369,30 @@ export default function GlassNav() {
         aria-hidden={!menuOpen}
       >
         <ul className="glass-nav-drawer-list">
-          {MENU_LINKS.map((item) => (
-            <li key={item.href}>
-              {item.href.startsWith('http') ? (
-                <a
-                  href={item.href}
-                  className="glass-nav-drawer-link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={closeMenu}
-                >
-                  {item.label}
-                </a>
-              ) : (
-                <Link
-                  href={item.href}
-                  className="glass-nav-drawer-link"
-                  onClick={closeMenu}
-                >
-                  {item.label}
-                </Link>
-              )}
-            </li>
-          ))}
+          {MENU_LINKS.map((item) => {
+            const active = !item.external && isTabActive(item.href, router.pathname)
+            const className = `glass-nav-drawer-link${active ? ' is-active' : ''}`
+
+            return (
+              <li key={item.href}>
+                {item.external ? (
+                  <a
+                    href={item.href}
+                    className={className}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={closeMenu}
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link href={item.href} className={className} onClick={closeMenu}>
+                    {item.label}
+                  </Link>
+                )}
+              </li>
+            )
+          })}
           <li>
             <a
               href="https://github.com/saequus"

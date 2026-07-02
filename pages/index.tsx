@@ -10,10 +10,14 @@ export default function Home() {
         {/* Premium Hero Glass Plaque — inspired by aurō + SF refs */}
         <section className="hero-glass">
           <div className="hero-mark" aria-hidden>
-            <div className="hero-orb">
-              <div className="orb-glow" />
-              <span className="orb-initials">SS</span>
-            </div>
+            <img
+              className="hero-avatar"
+              src="/assets/img/session-ava-2025.jpg"
+              alt=""
+              width={260}
+              height={313}
+              decoding="async"
+            />
           </div>
           <h1>{PROFILE.name}</h1>
           <p className="hero-subtitle">
