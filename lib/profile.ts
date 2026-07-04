@@ -46,7 +46,7 @@ export type WorkEntry = {
 }
 
 export const SERPENTARIA = {
-  href: 'https://www.serpentaria.eu/',
+  href: 'https://serpentaria.eu/',
   ventures: [
     {
       name: 'SalesAmplifier',
@@ -61,7 +61,7 @@ export const WORK_HISTORY: WorkEntry[] = [
   {
     company: 'Serpentaria Capital',
     role: 'Founding Engineer',
-    period: '2024 — Present',
+    period: 'Oct 2025 — Present',
     href: SERPENTARIA.href,
     stack: 'TypeScript, Next.js, Python, Railway',
     summary:
