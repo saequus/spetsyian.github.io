@@ -1,9 +1,10 @@
 import type { GetStaticProps } from 'next'
+import { Briefcase, CalendarDays, FileText, Github, Linkedin } from 'lucide-react'
 import Link from 'next/link'
 import SiteShell from '../components/SiteShell'
 import type { PostMeta } from '../lib/blog'
 import { formatDate } from '../lib/format'
-import { FOCUS_AREAS, HIGHLIGHTS, IDENTITY, PROFILE, SERPENTARIA } from '../lib/profile'
+import { FOCUS_AREAS, HIGHLIGHTS, PROFILE, SERPENTARIA } from '../lib/profile'
 import { personSchema, profilePageSchema, websiteSchema } from '../lib/schema'
 
 type Props = { posts: PostMeta[] }
@@ -25,7 +26,7 @@ export default function Home({ posts }: Props) {
       jsonLd={[personSchema(), websiteSchema(), profilePageSchema()]}
     >
       <div className="home-page">
-        <section className="hero-glass" aria-labelledby="hero-title">
+        <section className="hero-glass hero-split" aria-labelledby="hero-title">
           <div className="hero-mark">
             <picture>
               <source srcSet="/assets/img/session-ava-2025-560.webp" type="image/webp" />
@@ -33,38 +34,55 @@ export default function Home({ posts }: Props) {
                 className="hero-avatar"
                 src="/assets/img/session-ava-2025-560.jpg"
                 alt="Portrait of Viachaslau Spetsyian"
-                width={260}
-                height={313}
+                width={220}
+                height={220}
                 decoding="async"
                 fetchPriority="high"
               />
             </picture>
           </div>
-          <h1 id="hero-title">
-            {PROFILE.name}
-            <span className="hero-aka"> (Slava)</span>
-          </h1>
-          <p className="hero-subtitle">{PROFILE.headline}</p>
-          <p className="hero-meta">
-            {PROFILE.title} · {PROFILE.location} · Founder of{' '}
-            <a href={SERPENTARIA.href} target="_blank" rel="noopener noreferrer">
-              Serpentaria Capital
-            </a>
-          </p>
-          <p className="hero-actions">
-            <a className="hero-btn hero-btn--primary" href={PROFILE.linkedIn} target="_blank" rel="noopener noreferrer">
-              LinkedIn
-            </a>
-            <a className="hero-btn" href={PROFILE.github} target="_blank" rel="noopener noreferrer">
-              GitHub
-            </a>
-            <Link className="hero-btn" href="/work/">
-              Experience
-            </Link>
-            <Link className="hero-btn" href="/calendar/">
-              Book a call
-            </Link>
-          </p>
+          <div className="hero-text">
+            <p className="hero-eyebrow">Senior Software &amp; AI Engineer · {PROFILE.location}</p>
+            <h1 id="hero-title">
+              {PROFILE.name}
+              <span className="hero-aka"> (Slava)</span>
+            </h1>
+            <p className="hero-subtitle">{PROFILE.headline}</p>
+            <p className="hero-meta">
+              Founder of{' '}
+              <a href={SERPENTARIA.href} target="_blank" rel="noopener noreferrer">
+                Serpentaria Capital
+              </a>{' '}
+              · ex-Razor Labs, ZAGENO
+            </p>
+            <ul className="hero-actions" aria-label="Profiles and contact">
+              <li>
+                <a className="hero-btn hero-btn--primary" href={PROFILE.linkedIn} target="_blank" rel="noopener noreferrer">
+                  <Linkedin size={16} strokeWidth={1.9} aria-hidden /> LinkedIn
+                </a>
+              </li>
+              <li>
+                <a className="hero-btn" href={PROFILE.github} target="_blank" rel="noopener noreferrer">
+                  <Github size={16} strokeWidth={1.9} aria-hidden /> GitHub
+                </a>
+              </li>
+              <li>
+                <a className="hero-btn" href={PROFILE.cv} target="_blank" rel="noopener">
+                  <FileText size={16} strokeWidth={1.9} aria-hidden /> CV
+                </a>
+              </li>
+              <li>
+                <Link className="hero-btn" href="/work/">
+                  <Briefcase size={16} strokeWidth={1.9} aria-hidden /> Experience
+                </Link>
+              </li>
+              <li>
+                <Link className="hero-btn" href="/calendar/">
+                  <CalendarDays size={16} strokeWidth={1.9} aria-hidden /> Book a call
+                </Link>
+              </li>
+            </ul>
+          </div>
         </section>
 
         <section className="glass-statement" aria-label="Summary">
@@ -135,15 +153,6 @@ export default function Home({ posts }: Props) {
             </p>
           </section>
         ) : null}
-
-        <section className="identity" aria-labelledby="identity-title">
-          <h2 id="identity-title">Identity</h2>
-          {IDENTITY.map((item) => (
-            <p key={item.label}>
-              <strong>{item.label}:</strong> {item.value}
-            </p>
-          ))}
-        </section>
 
         <section aria-labelledby="contact-title">
           <h2 id="contact-title">Get in touch</h2>

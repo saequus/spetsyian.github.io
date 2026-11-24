@@ -256,17 +256,6 @@ a:hover {
   overflow-wrap: break-word;
 }
 
-/* Identity section — plain natural text, no artificial glass blocks */
-.identity p {
-  margin-bottom: 0.65rem;
-}
-
-.identity strong {
-  color: rgba(var(--tint-orange-soft-rgb), 0.92);
-  font-weight: 600;
-  letter-spacing: 0.01em;
-}
-
 /* ─── Creative Premium Hero (references aurō + SF glowing objects) ────────── */
 .hero-glass {
   text-align: center;
@@ -2474,4 +2463,113 @@ a:hover {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-cream-muted);
+}
+
+/* ─── Home hero: photo left, identity right (stacks on mobile) ─────────────── */
+.hero-split {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.75rem, 4vw, 3.25rem);
+  text-align: left;
+  padding: 3.5rem 0 2.75rem;
+}
+
+.hero-split .hero-mark {
+  flex: 0 0 auto;
+  margin: 0;
+  position: relative;
+}
+
+/* soft orange halo behind the photo */
+.hero-split .hero-mark::before {
+  content: '';
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--tint-orange-rgb), 0.28) 0%, rgba(var(--tint-orange-rgb), 0) 70%);
+  filter: blur(6px);
+  z-index: -1;
+}
+
+.hero-split .hero-avatar {
+  width: clamp(150px, 18vw, 220px);
+  height: clamp(150px, 18vw, 220px);
+  object-fit: cover;
+  object-position: 50% 30%;
+  border-radius: 50%;
+  border: 3px solid rgba(16, 15, 14, 0.9);
+  box-shadow:
+    0 0 0 1.5px rgba(var(--tint-orange-rgb), 0.55),
+    0 0 36px rgba(var(--tint-orange-rgb), 0.18),
+    0 22px 50px rgba(0, 0, 0, 0.6);
+}
+
+.hero-text {
+  min-width: 0;
+}
+
+.hero-eyebrow {
+  margin: 0 0 0.5rem !important;
+  font-size: 0.8rem !important;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(var(--tint-orange-soft-rgb), 0.9) !important;
+}
+
+.hero-split h1 {
+  font-family: var(--font-display), var(--font-body), system-ui, sans-serif;
+  font-size: clamp(1.9rem, 4.2vw, 2.75rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.6rem;
+  text-wrap: balance;
+}
+
+.hero-split .hero-subtitle {
+  margin: 0 0 0.45rem !important;
+  font-size: clamp(1.05rem, 2.2vw, 1.22rem) !important;
+  color: var(--text-cream) !important;
+}
+
+.hero-split .hero-meta {
+  font-size: 0.95rem !important;
+  margin: 0 !important;
+}
+
+.hero-split .hero-actions {
+  list-style: none;
+  padding: 0;
+  justify-content: flex-start;
+  margin: 1.35rem 0 0 !important;
+}
+
+.hero-split .hero-btn {
+  gap: 0.45rem;
+  min-height: 40px;
+  padding: 0 0.95rem;
+  font-size: 0.9rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.hero-split .hero-btn svg {
+  flex: 0 0 auto;
+  opacity: 0.9;
+}
+
+@media (max-width: 767px) {
+  .hero-split {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem 0 1.5rem;
+    gap: 1.4rem;
+  }
+  .hero-split .hero-actions {
+    justify-content: center;
+  }
+  .hero-split .hero-avatar {
+    width: 160px;
+    height: 160px;
+  }
 }
