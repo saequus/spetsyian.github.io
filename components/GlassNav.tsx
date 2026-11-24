@@ -38,12 +38,13 @@ const MENU_LINKS = [
   { href: '/links/', label: 'Favorite Links', external: false },
   { href: '/work/', label: 'Work', external: false },
   { href: '/projects/', label: 'Projects', external: false },
-  { href: 'https://t.me/spetsyian#', label: 'Blog', external: true },
+  { href: '/blog/', label: 'Blog', external: false },
 ] as const
 
 /** Internal routes tracked by the sliding indicator (most specific first). */
 const NAV_ROUTE_MATCHERS = [
   '/calendar/',
+  '/blog/',
   '/projects/',
   '/work/',
   '/links/',
@@ -55,6 +56,7 @@ const NAV_ITEM_INDEX_BY_HREF: Record<string, number> = {
   '/links/': 1,
   '/work/': 2,
   '/projects/': 3,
+  '/blog/': 4,
   '/calendar/': 8,
 }
 

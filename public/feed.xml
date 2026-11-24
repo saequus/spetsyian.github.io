@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Viachaslau Spetsyian — Blog</title>
+    <link>https://saequus.com/blog/</link>
+    <atom:link href="https://saequus.com/feed.xml" rel="self" type="application/rss+xml" />
+    <description>Practical AI engineering: RAG, evaluation, agents and LLMOps.</description>
+    <language>en</language>
+    <lastBuildDate>Tue, 16 Jun 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Building a tool-calling AI agent with structured outputs and guardrails (xAI Grok API)</title>
+      <link>https://saequus.com/blog/tool-calling-agent-structured-outputs-guardrails/</link>
+      <guid isPermaLink="true">https://saequus.com/blog/tool-calling-agent-structured-outputs-guardrails/</guid>
+      <pubDate>Tue, 16 Jun 2026 08:00:00 GMT</pubDate>
+      <dc:creator>Viachaslau Spetsyian</dc:creator>
+      <description>Build a production-minded tool-calling agent on the xAI API: typed tools, a bounded loop, structured outputs, approval gates, retries, budgets and tracing.</description>
+      <category>AI Agents</category>
+      <category>Tool Calling</category>
+      <category>Structured Outputs</category>
+      <category>xAI</category>
+      <category>Guardrails</category>
+      <category>Python</category>
+    </item>
+    <item>
+      <title>Evaluating RAG and LLM apps in production: eval sets, LLM-as-judge and CI regression gates</title>
+      <link>https://saequus.com/blog/evaluating-rag-llm-apps-in-production/</link>
+      <guid isPermaLink="true">https://saequus.com/blog/evaluating-rag-llm-apps-in-production/</guid>
+      <pubDate>Tue, 17 Feb 2026 08:00:00 GMT</pubDate>
+      <dc:creator>Viachaslau Spetsyian</dc:creator>
+      <description>A practical playbook for LLM evals: offline eval sets, retrieval and Ragas-style metrics, calibrated LLM-as-judge, CI regression gates and tracing.</description>
+      <category>LLM Evaluation</category>
+      <category>RAG</category>
+      <category>LLMOps</category>
+      <category>Ragas</category>
+      <category>Langfuse</category>
+      <category>CI/CD</category>
+    </item>
+    <item>
+      <title>Running a RAG pipeline on Nebius Token Factory: embeddings, Qdrant and an honest eval loop</title>
+      <link>https://saequus.com/blog/rag-pipeline-nebius-token-factory/</link>
+      <guid isPermaLink="true">https://saequus.com/blog/rag-pipeline-nebius-token-factory/</guid>
+      <pubDate>Tue, 09 Dec 2025 08:00:00 GMT</pubDate>
+      <dc:creator>Viachaslau Spetsyian</dc:creator>
+      <description>How I build RAG on Nebius Token Factory: Qwen3 embeddings, Qdrant, chunking, grounded answers with citations, a small eval set, and cost/latency knobs.</description>
+      <category>RAG</category>
+      <category>Nebius</category>
+      <category>Qdrant</category>
+      <category>Embeddings</category>
+      <category>LLMOps</category>
+      <category>Python</category>
+    </item>
+  </channel>
+</rss>

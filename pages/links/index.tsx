@@ -1,11 +1,19 @@
 import SiteShell from '../../components/SiteShell'
 import { PROFILE } from '../../lib/profile'
+import { breadcrumbSchema } from '../../lib/schema'
 
 export default function LinksPage() {
   return (
     <SiteShell
-      title="Favorite Links | Slava Saequus"
-      description="Resources that have shaped my worldview and aspirations."
+      title="Favorite Links — Viachaslau Spetsyian"
+      description="Thinkers, books and resources that shaped how Viachaslau (Slava) Spetsyian thinks about engineering, careers and life."
+      path="/links/"
+      jsonLd={[
+        breadcrumbSchema([
+          { name: 'Home', path: '/' },
+          { name: 'Favorite Links', path: '/links/' },
+        ]),
+      ]}
       contentClassName="content-wide"
     >
       <header className="links-page-intro">

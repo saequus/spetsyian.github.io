@@ -16,8 +16,9 @@ const BookCallBooking = dynamic(
 export default function CalendarPage() {
   return (
     <SiteShell
-      title="Book a call | Slava Saequus"
-      description="Schedule a call — pick a date and time (CET)."
+      title="Book a call — Viachaslau Spetsyian"
+      description="Book a call with Viachaslau (Slava) Spetsyian, AI Engineer in Warsaw. Pick an open date and time (CET)."
+      path="/calendar/"
       contentClassName="content-booking"
       scrollNavCollapse={false}
     >
@@ -28,6 +29,13 @@ export default function CalendarPage() {
         </p>
       </header>
       <BookCallBooking />
+      <noscript>
+        <p>
+          The booking calendar needs JavaScript. You can also reach me on{' '}
+          <a href="https://www.linkedin.com/in/spetsyian/">LinkedIn</a> or by email at{' '}
+          <a href="mailto:slava@spetsyian.com">slava@spetsyian.com</a>.
+        </p>
+      </noscript>
     </SiteShell>
   )
 }

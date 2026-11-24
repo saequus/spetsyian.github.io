@@ -1,22 +1,58 @@
 export const PROFILE = {
-  name: 'Slava Saequus',
-  title: 'Senior Software Engineer & Team Lead',
+  name: 'Viachaslau Spetsyian',
+  shortName: 'Slava Spetsyian',
+  handle: 'saequus',
+  title: 'Senior Software & AI Engineer',
+  headline: 'AI Engineer — LLM applications, agents, RAG & LLMOps',
   location: 'Warsaw, Poland',
+  email: 'slava@spetsyian.com',
   tagline:
-    'I lead teams, build platforms, and own delivery end to end. Fluent in Polish, English, and Russian.',
-  interests: ['engineering', 'financial markets', 'somatic work'],
+    'I build production LLM systems — agentic workflows, retrieval-augmented generation and evaluation-driven LLMOps — on top of solid Python backends and cloud architecture.',
+  about:
+    'Senior Software & AI Engineer with years of production Python behind me and a track record of deploying ML models to production. Today my focus is LLM applications: agentic workflows, retrieval-augmented generation (RAG), evaluation-driven development and LLMOps. I pair strong backend and cloud architecture with a business and finance background, and I have led and mentored engineering teams. Fluent in Polish, English and Russian.',
+  languages: ['Polish', 'English', 'Russian'],
+  interests: ['agentic AI systems', 'distributed systems', 'financial markets'],
   linkedIn: 'https://www.linkedin.com/in/spetsyian/',
   github: 'https://github.com/saequus',
   x: 'https://x.com/slava_saequus',
   leetcode: 'https://leetcode.com/saequus/',
   hackerRank: 'https://www.hackerrank.com/saequus',
   medium: 'https://medium.com/saequus',
+  telegram: 'https://t.me/spetsyian',
   cv: '/assets/Slava_Spetsyian_CV.pdf',
   coursera: {
     title: 'Algorithmic Toolbox',
     url: 'https://www.coursera.org/account/accomplishments/verify/8DZFVTMY7GQS',
   },
 } as const
+
+/** Focus areas shown on the home page (all backed by the CV). */
+export const FOCUS_AREAS = [
+  {
+    title: 'LLM agents & tool calling',
+    body: 'Agentic workflows with LangGraph, Pydantic AI and the Model Context Protocol (MCP): tool calling, structured outputs and guardrails.',
+  },
+  {
+    title: 'RAG & vector search',
+    body: 'Retrieval pipelines on pgvector and Qdrant — embeddings, hybrid search and reranking, built to be measured rather than guessed.',
+  },
+  {
+    title: 'Evals & LLMOps',
+    body: 'Evaluation-driven development with Ragas, DeepEval, Langfuse and LangSmith: prompt versioning, tracing, regression gates.',
+  },
+  {
+    title: 'ML serving & backends',
+    body: 'Model serving, monitoring and deployment pipelines (MLflow, TorchServe, Grafana, Terraform) behind FastAPI services on GCP and AWS.',
+  },
+] as const
+
+/** Key achievements, verbatim facts from the CV. */
+export const HIGHLIGHTS = [
+  'Led and mentored a team of 5 middle and junior engineers, improving code quality by 30% and cutting onboarding time by 80%.',
+  'Deployed production ML models that cut latency by 40%, lifted accuracy by 25% and boosted adoption by 35%.',
+  'Led backend development of key features that reduced average response time from 4.2s to 0.9s.',
+  'Architected microservices on Google Cloud, improving scalability and reducing infrastructure costs by 25%.',
+] as const
 
 export const IDENTITY = [
   {
@@ -39,6 +75,9 @@ export type WorkEntry = {
   company: string
   role: string
   period: string
+  /** ISO year-month, used for machine-readable <time> elements. */
+  start: string
+  end?: string
   href?: string
   stack?: string
   summary: string
@@ -60,49 +99,47 @@ export const SERPENTARIA = {
 export const WORK_HISTORY: WorkEntry[] = [
   {
     company: 'Serpentaria Capital',
-    role: 'Founding Engineer',
+    role: 'Founder & AI Engineer',
     period: 'Oct 2025 — Present',
+    start: '2025-10',
     href: SERPENTARIA.href,
-    stack: 'TypeScript, Next.js, Python, Railway',
+    stack: 'LangGraph, MCP, pgvector, Langfuse, FastAPI',
     summary:
-      'Working on product ventures at the intersection of engineering and commerce — platforms, APIs, and internal systems.',
+      'Founded Serpentaria Capital Sp. z o.o. Building LLM agents and RAG pipelines for finance and research use cases, with tool calling, structured outputs, automated evals and tracing.',
     ventures: [...SERPENTARIA.ventures],
   },
   {
     company: 'Razor Labs',
     role: 'Senior Software Engineer',
-    period: '2024 — Mar 2026',
+    period: 'Jan 2024 — Mar 2026',
+    start: '2024-01',
+    end: '2026-03',
     href: 'https://il.linkedin.com/company/razor-technologies-inc',
-    stack:
-      'Python, GCP, Grafana, Kafka, Elasticsearch, Kubernetes, AI platforms',
+    stack: 'MLflow, TorchServe, Grafana, Terraform, GCP, FastAPI, PostgreSQL, MongoDB',
     summary:
-      'Built AI-driven industrial platforms. Led engineering on predictive maintenance and sensor-fusion systems with event streaming and observability at scale.',
+      'Led a team of 5 engineers delivering ML-powered product features. Owned model serving, monitoring and deployment pipelines for production-grade ML models. Bridged research algorithms and real-world products, reducing processing time by 40%, improving prediction accuracy by 25% and increasing user adoption by 35%.',
   },
   {
     company: 'ZAGENO',
     role: 'Senior Software Engineer',
     period: 'Nov 2021 — Jan 2024',
+    start: '2021-11',
+    end: '2024-01',
     href: 'https://zageno.com/',
-    stack: 'Python, Google Cloud, Kubernetes, FastAPI, PostgreSQL, Django',
+    stack: 'Python, GCP, AWS, Kubernetes, FastAPI, PostgreSQL, Django',
     summary:
-      'Designed integration solutions that unified multiple services into one platform, shipped killer features, and improved pricing algorithms.',
-  },
-  {
-    company: 'ING Tech',
-    role: 'Senior Developer',
-    period: 'Jun 2020 — Oct 2021',
-    stack: 'Python, Pandas, NumPy',
-    summary:
-      'Built libraries and API interfaces for bank workers to simplify credit-risk estimation workflows.',
+      'Designed integration solutions consolidating multiple services into a unified platform. Built high-impact product features and improved pricing algorithms.',
   },
   {
     company: 'Emerging Travel Group',
-    role: 'Growth Engineer',
-    period: 'Oct 2019 — Jun 2020',
+    role: 'Backend Developer',
+    period: 'Oct 2019 — Oct 2021',
+    start: '2019-10',
+    end: '2021-10',
     href: 'https://www.emergingtravel.com/',
-    stack: 'Python, JavaScript, Node.js, DRF, PostgreSQL, Nginx',
+    stack: 'Python, Go, Django, TypeScript, Express.js, Kubernetes, PostgreSQL, Redis',
     summary:
-      'Ran growth experiments across backend and frontend, instrumenting everything with analytics to validate product hypotheses for B2B travel.',
+      'Built REST API integrations in Go and Python, developed and operated microservices, improved CI/CD flows and built a backend-for-frontend layer in TypeScript.',
   },
 ]
 
@@ -137,7 +174,7 @@ export const PROJECTS: ProjectEntry[] = [
     name: 'Zenhotels',
     href: 'https://www.zenhotels.com/',
     image: '/assets/img/projects/zenhotels-project-img',
-    description: 'Global hotel booking platform — growth engineering and product analytics.',
+    description: 'Global hotel booking platform (Emerging Travel Group) — backend API integrations and microservices.',
   },
   {
     name: 'Lift Vertical',
@@ -155,62 +192,53 @@ export const PROJECTS: ProjectEntry[] = [
 ]
 
 export const EDUCATION = {
-  school: 'University of Economics and Human Sciences in Warsaw',
+  school: 'University of Finance and Management in Warsaw',
   degree: 'BSc in Business Administration and Service Management',
-  period: '2013 — 2016',
+  department: 'Management Department',
+  period: 'Graduated September 2016',
   note: 'CGPA 4.39/5.00',
 } as const
 
-export const SKILLS = [
-  'Python',
-  'JavaScript',
-  'TypeScript',
-  'Rust',
-  'Shell',
-  'Next.js',
-  'React',
-  'Node.js',
-  'Tailwind CSS',
-  'FastAPI',
-  'Django',
-  'PostgreSQL',
-  'MongoDB',
-  'Redis',
-  'Elasticsearch',
-  'Kafka',
-  'PyTorch',
-  'TensorFlow',
-  'scikit-learn',
-  'Hugging Face',
-  'ONNX',
-  'MLflow',
-  'Weights & Biases',
-  'Neptune',
-  'Comet ML',
-  'DVC',
-  'Feast',
-  'Great Expectations',
-  'Apache Airflow',
-  'Kubeflow',
-  'Prefect',
-  'Dagster',
-  'Ray',
-  'NVIDIA Triton',
-  'BentoML',
-  'KServe',
-  'Docker',
-  'Kubernetes',
-  'Terraform',
-  'Helm',
-  'Argo CD',
-  'Prometheus',
-  'Grafana',
-  'OpenTelemetry',
-  'Evidently AI',
-  'AWS',
-  'AWS SageMaker',
-  'GCP',
-  'Vertex AI',
-  'Nginx',
-  'Vercel',
-] as const
+/** Grouped exactly as in the CV. */
+export const SKILL_GROUPS: { label: string; items: string[] }[] = [
+  {
+    label: 'LLM & Agents',
+    items: [
+      'OpenAI / Anthropic / Gemini APIs',
+      'LangGraph',
+      'LangChain',
+      'LlamaIndex',
+      'Pydantic AI',
+      'Model Context Protocol (MCP)',
+      'Tool calling',
+      'Structured outputs',
+    ],
+  },
+  {
+    label: 'RAG & Vector Search',
+    items: ['pgvector', 'Qdrant', 'Embeddings', 'Hybrid search', 'Reranking'],
+  },
+  {
+    label: 'LLMOps & Evals',
+    items: ['Langfuse', 'LangSmith', 'Ragas', 'DeepEval', 'Prompt versioning', 'Guardrails'],
+  },
+  {
+    label: 'ML & Serving',
+    items: ['MLflow', 'TorchServe', 'PyTorch', 'Hugging Face', 'vLLM', 'Ollama'],
+  },
+  { label: 'AI Dev Tools', items: ['Cursor', 'Claude Code', 'GitHub Copilot'] },
+  {
+    label: 'Cloud',
+    items: ['AWS', 'Google Cloud Platform (Vertex AI)', 'Microsoft Azure'],
+  },
+  { label: 'Languages', items: ['Python', 'Go', 'Rust', 'TypeScript / JavaScript'] },
+  { label: 'Databases', items: ['PostgreSQL', 'MongoDB', 'Redis'] },
+  {
+    label: 'Frameworks',
+    items: ['FastAPI', 'Django', 'React', 'Vue', 'Node', 'Express', 'pandas', 'NumPy', 'Matplotlib'],
+  },
+  {
+    label: 'DevOps',
+    items: ['Kubernetes', 'Docker', 'Terraform', 'Grafana', 'Nginx', 'CI/CD'],
+  },
+]

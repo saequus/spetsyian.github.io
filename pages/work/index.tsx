@@ -1,19 +1,32 @@
 import SiteShell from '../../components/SiteShell'
-import { EDUCATION, PROFILE, SKILLS, WORK_HISTORY } from '../../lib/profile'
+import { EDUCATION, PROFILE, SKILL_GROUPS, WORK_HISTORY } from '../../lib/profile'
+import { breadcrumbSchema } from '../../lib/schema'
 
 export default function WorkPage() {
   return (
     <SiteShell
-      title="Work | Slava Saequus"
-      description="Experience across AI platforms, fintech, life-science marketplaces, and travel tech."
+      title="Experience & Skills — Viachaslau Spetsyian, AI Engineer"
+      description="Experience of Viachaslau Spetsyian: AI Engineer at Serpentaria Capital, Senior Software Engineer at Razor Labs and ZAGENO. Skills in LLMs, RAG, LLMOps."
+      path="/work/"
+      jsonLd={[
+        breadcrumbSchema([
+          { name: 'Home', path: '/' },
+          { name: 'Experience', path: '/work/' },
+        ]),
+      ]}
     >
       <header className="links-page-intro">
-        <h1>Work</h1>
-        <p className="meta">Last updated: June 2026</p>
+        <h1>Experience &amp; skills</h1>
+        <p className="meta">Last updated: November 2026</p>
         <p>
-          {PROFILE.title} based in {PROFILE.location}. Background in full-stack
-          engineering, platform integration, and growth — with production
-          experience across Python, JavaScript, cloud, and Kubernetes.
+          {PROFILE.title} based in {PROFILE.location}. I build LLM applications — agents, RAG and
+          evaluation pipelines — on top of production Python backends, ML model serving and cloud
+          infrastructure, and I have led engineering teams. Languages: {PROFILE.languages.join(', ')}.
+        </p>
+        <p>
+          <a href={PROFILE.linkedIn} target="_blank" rel="noopener noreferrer">
+            Full profile on LinkedIn
+          </a>
         </p>
       </header>
 
@@ -33,12 +46,13 @@ export default function WorkPage() {
                   entry.company
                 )}
               </h2>
-              <p className="work-entry-meta">{entry.period}</p>
+              <p className="work-entry-meta">
+                <time dateTime={entry.start}>{entry.period.split(' — ')[0]}</time> —{' '}
+                {entry.end ? <time dateTime={entry.end}>{entry.period.split(' — ')[1]}</time> : 'Present'}
+              </p>
             </div>
             <p className="work-entry-role">{entry.role}</p>
-            {entry.stack ? (
-              <p className="work-entry-stack">{entry.stack}</p>
-            ) : null}
+            {entry.stack ? <p className="work-entry-stack">{entry.stack}</p> : null}
             <p>{entry.summary}</p>
             {entry.ventures?.length ? (
               <div className="work-ventures">
@@ -46,11 +60,7 @@ export default function WorkPage() {
                 <ul className="work-ventures-list">
                   {entry.ventures.map((venture) => (
                     <li key={venture.name} className="work-venture-item">
-                      <a
-                        href={venture.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
+                      <a href={venture.href} target="_blank" rel="noopener noreferrer">
                         {venture.name}
                       </a>
                       <p>{venture.description}</p>
@@ -64,20 +74,29 @@ export default function WorkPage() {
       </div>
 
       <article className="liquid-glass liquid-glass--tint glass-block">
-        <h2>Education</h2>
-        <p className="work-entry-role">{EDUCATION.degree}</p>
-        <p className="work-entry-meta">
-          {EDUCATION.school} · {EDUCATION.period} · {EDUCATION.note}
-        </p>
+        <h2>Skills</h2>
+        <dl className="skill-groups">
+          {SKILL_GROUPS.map((group) => (
+            <div key={group.label} className="skill-group">
+              <dt>{group.label}</dt>
+              <dd>
+                <ul className="skill-list">
+                  {group.items.map((skill) => (
+                    <li key={skill}>{skill}</li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          ))}
+        </dl>
       </article>
 
       <article className="liquid-glass liquid-glass--tint glass-block">
-        <h2>Skills</h2>
-        <ul className="skill-list">
-          {SKILLS.map((skill) => (
-            <li key={skill}>{skill}</li>
-          ))}
-        </ul>
+        <h2>Education</h2>
+        <p className="work-entry-role">{EDUCATION.degree}</p>
+        <p className="work-entry-meta">
+          {EDUCATION.school}, {EDUCATION.department} · {EDUCATION.period} · {EDUCATION.note}
+        </p>
       </article>
     </SiteShell>
   )
