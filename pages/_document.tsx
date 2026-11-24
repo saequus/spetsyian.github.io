@@ -16,6 +16,18 @@ export default function Document() {
         <meta name="theme-color" content="#0a0a0c" />
         <meta name="color-scheme" content="dark" />
         <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="Viachaslau Spetsyian — Blog (RSS)"
+          href="https://saequus.com/feed.xml"
+        />
+        <link
+          rel="alternate"
+          type="application/atom+xml"
+          title="Viachaslau Spetsyian — Blog (Atom)"
+          href="https://saequus.com/atom.xml"
+        />
+        <link
           rel="preconnect"
           href="https://coreprojects.blob.core.windows.net"
           crossOrigin="anonymous"

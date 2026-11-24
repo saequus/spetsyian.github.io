@@ -1,6 +1,6 @@
 # spetsyian.github.io
 
-Personal site for **Slava Saequus**, built with [Next.js](https://nextjs.org/) and exported as static HTML for [GitHub Pages](https://pages.github.com/).
+Personal site of **Viachaslau (Slava) Spetsyian** — AI Engineer — built with [Next.js](https://nextjs.org/) (Pages Router) and exported as static HTML. Live at https://saequus.com (spetsyian.com redirects there).
 
 ## Run locally
 
@@ -38,3 +38,27 @@ npx serve@latest out
 Open the URL it prints (usually [http://localhost:3000](http://localhost:3000)).
 
 For GitHub Pages, publish the contents of `out/` after a successful `npm run build` (same flow as your existing deployment).
+
+## Blog posts
+
+Posts live in `content/blog/*.md` with a small frontmatter block:
+
+```md
+---
+title: Full article title (used for the H1)
+description: 140–160 character summary (meta description, RSS, lede)
+seoTitle: Shorter title for <title> (optional, ≤ 60 chars)
+date: 2026-06-16
+tags: [RAG, LLMOps]
+---
+```
+
+Markdown is rendered at build time by `lib/markdown.ts` (headings, lists, code fences, tables, links) — no runtime dependency.
+Open Graph cards for posts are generated with `python3 scripts/make-og-images.py` (add the slug to `CARDS` first).
+
+## SEO files
+
+`npm run build` first runs `scripts/generate-seo-files.mjs`, which writes `public/sitemap.xml`, `public/robots.txt`,
+`public/feed.xml` (RSS) and `public/atom.xml` from the post list. Run `npm run seo` to regenerate them without a full build.
+Canonical origin is set in `lib/site.ts` (`SITE_URL`) and in the script — keep both in sync.
+Per-page `<title>`, description, canonical, Open Graph/Twitter tags and JSON-LD come from `components/Seo.tsx` via `SiteShell` props.

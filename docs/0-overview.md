@@ -1,6 +1,6 @@
 # 0. Project Overview
 
-**spetsyian.github.io** is the personal website and digital presence for **Slava Saequus** (also known as saequus).
+**spetsyian.github.io** is the personal website and digital presence for **Viachaslau (Slava) Spetsyian** (also known as Slava Saequus / saequus), positioned as an AI Engineer.
 
 ## Purpose
 
@@ -18,7 +18,9 @@ The tone is thoughtful, precise, and warm — reflecting the personality of its 
 
 - **Framework**: Next.js (Pages Router) + TypeScript + React
 - **Styling**: Custom CSS with heavy emphasis on a bespoke "liquid glass" design system (see `styles/globals.css` and components like `GlassNav`, `SiteShell`, `GlassFooter`)
-- **Deployment**: Static export (`next build` → `out/`) hosted on GitHub Pages
+- **Deployment**: Static export (`next build` → `out/`), served at https://saequus.com (Vercel); spetsyian.com redirects there
+- **SEO**: `components/Seo.tsx` (meta, canonical, OG/Twitter, JSON-LD), `scripts/generate-seo-files.mjs` (sitemap, robots, RSS/Atom)
+- **Blog**: Markdown in `content/blog/`, rendered at build time by `lib/markdown.ts`
 - **Key features**:
   - Video background layer with subtle vignette
   - Fully responsive floating glass navigation
