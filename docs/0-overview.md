@@ -10,7 +10,6 @@ This is a minimalist yet rich personal site that serves as:
 - Showcase of current work (Serpentaria Capital / SalesAmplifier) and past experience
 - Curated collection of "favorite links" and intellectual resources
 - Availability and booking surface (calendar integration)
-- Personal identity expression (including personality test results like Enneagram and Human Design)
 
 The tone is thoughtful, precise, and warm — reflecting the personality of its owner: a senior engineer and team lead who values clear thinking, craftsmanship, and meaningful connections.
 

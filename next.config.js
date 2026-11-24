@@ -1,18 +1,11 @@
 /** @type {import('next').NextConfig} */
-const bookingApiSecret =
-  process.env.NEXT_PUBLIC_BOOKING_API_SECRET ||
-  process.env.BOOKING_API_SECRET ||
-  process.env.VITE_BOOKING_API_SECRET ||
-  ''
-
+// Deployed on Vercel as a regular Next.js app (not `output: 'export'`) so that
+// pages/api/booking/* can run server-side and keep BOOKING_API_SECRET private.
+// All content pages still use static generation (prerendered HTML).
 const nextConfig = {
-  output: 'export',
   trailingSlash: true,
   images: {
     unoptimized: true,
-  },
-  env: {
-    NEXT_PUBLIC_BOOKING_API_SECRET: bookingApiSecret,
   },
 }
 

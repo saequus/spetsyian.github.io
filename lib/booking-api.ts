@@ -1,16 +1,10 @@
-export const BOOKING_API_BASE =
-  (typeof process !== 'undefined' &&
-    process.env.NEXT_PUBLIC_SERPENTARIA_API_BASE) ||
-  'https://serpentaria-api.up.railway.app'
-
 /**
- * Set in `.env` as `NEXT_PUBLIC_BOOKING_API_SECRET`, or `BOOKING_API_SECRET` /
- * `VITE_BOOKING_API_SECRET` (merged in `next.config.js` at build). Public in bundle.
+ * Browser-side booking client. Calls same-origin API routes
+ * (pages/api/booking/*), which add the secret server-side from the
+ * non-public BOOKING_API_SECRET env var. No secret is bundled here.
  */
-export const BOOKING_API_SECRET =
-  (typeof process !== 'undefined' &&
-    process.env.NEXT_PUBLIC_BOOKING_API_SECRET) ||
-  ''
+const AVAILABILITY_URL = '/api/booking/availability/'
+const BOOK_CALL_URL = '/api/booking/book-call/'
 
 export const SLOT_LABELS = [
   '08:00',
@@ -54,15 +48,10 @@ export async function fetchAvailability(
   dateStr: string,
   signal?: AbortSignal
 ): Promise<AvailabilityResult> {
-  const headers: HeadersInit = {}
-  if (BOOKING_API_SECRET) {
-    headers['X-Booking-Api-Secret'] = BOOKING_API_SECRET
-  }
-
   try {
     const res = await fetch(
-      `${BOOKING_API_BASE}/api/availability?date=${encodeURIComponent(dateStr)}`,
-      { headers, signal }
+      `${AVAILABILITY_URL}?date=${encodeURIComponent(dateStr)}`,
+      { signal }
     )
 
     if (res.status === 401) {
@@ -114,16 +103,9 @@ export async function bookCall(
   | { ok: true; message?: string }
   | { ok: false; code: number; retryAfter?: number }
 > {
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-  }
-  if (BOOKING_API_SECRET) {
-    headers['X-Booking-Api-Secret'] = BOOKING_API_SECRET
-  }
-
-  const res = await fetch(`${BOOKING_API_BASE}/api/book-call`, {
+  const res = await fetch(BOOK_CALL_URL, {
     method: 'POST',
-    headers,
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })
 

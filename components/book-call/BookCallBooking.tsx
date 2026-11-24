@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import {
-  BOOKING_API_SECRET,
   SLOT_LABELS,
   bookCall,
   fetchAvailability,
@@ -206,7 +205,7 @@ export default function BookCallBooking() {
     }
     if (res.code === 401) {
       setSubmitError(
-        'Booking API rejected the request (401). Check NEXT_PUBLIC_BOOKING_API_SECRET if production requires it.'
+        'Booking is temporarily unavailable. Please try again later or reach me on LinkedIn.'
       )
       return
     }
@@ -251,10 +250,8 @@ export default function BookCallBooking() {
         <h2>Date</h2>
         {authError ? (
           <div className="book-call-alert book-call-alert--error">
-            API returned 401 — missing or invalid{' '}
-            <code>X-Booking-Api-Secret</code>. Set{' '}
-            <code>NEXT_PUBLIC_BOOKING_API_SECRET</code> for this deployment (or
-            ask the operator if the server requires it).
+            Booking is temporarily unavailable. Please try again later or reach
+            me on <a href="https://www.linkedin.com/in/spetsyian/">LinkedIn</a>.
           </div>
         ) : null}
         {rateInfo ? (
@@ -443,12 +440,6 @@ export default function BookCallBooking() {
           {submitError ? (
             <div className="book-call-alert book-call-alert--error">
               {submitError}
-            </div>
-          ) : null}
-          {!BOOKING_API_SECRET ? (
-            <div className="book-call-alert book-call-alert--info">
-              Tip: if the API returns 401 in production, set{' '}
-              <code>NEXT_PUBLIC_BOOKING_API_SECRET</code> before build.
             </div>
           ) : null}
           <button

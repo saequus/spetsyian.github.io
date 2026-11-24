@@ -1,6 +1,6 @@
 # spetsyian.github.io
 
-Personal site of **Viachaslau (Slava) Spetsyian** — AI Engineer — built with [Next.js](https://nextjs.org/) (Pages Router) and exported as static HTML. Live at https://saequus.com (spetsyian.com redirects there).
+Personal site of **Viachaslau (Slava) Spetsyian** — AI Engineer — built with [Next.js](https://nextjs.org/) (Pages Router). Content pages are statically generated; a small server-side API route proxies the booking calendar. Live at https://saequus.com (spetsyian.com redirects there).
 
 ## Run locally
 
@@ -26,19 +26,15 @@ The dev server hot-reloads when you edit pages or styles.
 
 | Command | Purpose |
 |--------|---------|
-| `npm run build` | Production build; static files are written to `out/` |
+| `npm run build` | Production build (regenerates SEO files, then `next build`) |
 | `npm run typecheck` | TypeScript check only |
 
-To preview the **static** build locally (what GitHub Pages serves), run `npm run build`, then:
+## Deployment
 
-```bash
-npx serve@latest out
-```
-
-Open the URL it prints (usually [http://localhost:3000](http://localhost:3000)).
-
-For GitHub Pages, publish the contents of `out/` after a successful `npm run build` (same flow as your existing deployment).
-
+Deployed on Vercel (project `saequus-com`) as a regular Next.js app. `output: 'export'` was removed so that
+`pages/api/booking/*` can run server-side: they forward availability/booking requests to the Serpentaria API and add
+the `X-Booking-Api-Secret` header from the **server-only** env var `BOOKING_API_SECRET` (optional `BOOKING_API_BASE`
+overrides the upstream URL). Never expose this secret via a `NEXT_PUBLIC_*` variable.
 ## Blog posts
 
 Posts live in `content/blog/*.md` with a small frontmatter block:
